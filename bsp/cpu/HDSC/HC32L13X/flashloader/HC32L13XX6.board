@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<flash_board>
+  <pass>
+    <loader>$PROJ_DIR$\..\..\..\bsp\cpu\HDSC\flashloader\FlashHC32L13XX6.flash</loader>
+    <range>CODE 0x00000000 0x00007FFF</range>
+  </pass>
+</flash_board>
