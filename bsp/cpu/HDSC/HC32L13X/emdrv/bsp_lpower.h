@@ -43,6 +43,6 @@ void BSP_LPowerStop(void);
  *
  * @return  same as LPTimer IRQ count before stop.
  */
-uint16_t BSP_LPowerGetSecs(void);
+uint32_t BSP_LPowerGetSecs(void);
 
 #endif

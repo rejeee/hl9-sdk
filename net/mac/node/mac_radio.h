@@ -41,6 +41,15 @@ bool MacRadio_Init(void);
 bool MacRadio_AbortRx(void);
 
 /**
+ *@brief Abort Rx and update
+ *
+ *@param    update  whether radio configuration need update
+ *
+ *@return true if success else false.
+ */
+bool MacRadio_UpdateRx(bool update);
+
+/**
  *@return AT_STATUS
  */
 uint32_t MacRadio_TxProcess(uint8_t *buf, uint32_t len);

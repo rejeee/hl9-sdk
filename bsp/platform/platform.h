@@ -11,6 +11,6 @@
 #ifndef PLATFORM_H
 #define PLATFORM_H
 
-#include "platform/mhl9/dev.h"
+#include "platform/hl9.h"
 
 #endif  /* PLATFORM_H */

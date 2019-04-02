@@ -26,8 +26,8 @@ void AppInit(void)
 {
     /* Initialize platform driver */
 
-    /* watchdog timeout 13.1s */
-    if(false == PlatformInit(0x0D)){
+    /* watchdog timeout 13.1s refer MCU datasheet */
+    if(RJ_ERR_OK != PlatformInit(0x0D)){
         /* NOTE: here can use watchdog reboot */
         NVIC_SystemReset();
         return;

@@ -322,10 +322,10 @@
           <state>$PROJ_DIR$\..\..\..\bsp\cpu\HDSC</state>
           <state>$PROJ_DIR$\..\..\..\bsp\cpu\HDSC\HC32L13X</state>
           <state>$PROJ_DIR$\..\..\..\bsp\cpu\HDSC\HC32L13X\driver\inc</state>
+          <state>$PROJ_DIR$\..\..\..\bsp\platform\common</state>
           <state>$PROJ_DIR$\..\..\..\libs</state>
           <state>$PROJ_DIR$\..\..\..\app</state>
           <state>$PROJ_DIR$\..\..\..\net</state>
-          <state>$PROJ_DIR$\..\..\..\</state>
           <state>$PROJ_DIR$\..\config</state>
           <state>$PROJ_DIR$\..\</state>
         </option>
@@ -787,7 +787,6 @@
         <option>
           <name>IlinkAdditionalLibs</name>
           <state>$PROJ_DIR$\..\..\..\libs\rjhl9.a</state>
-          <state>$PROJ_DIR$\..\..\..\kernel\CMSIS\RTOS\RTX\LIB\IAR\RTX_CM0.a</state>
         </option>
         <option>
           <name>IlinkOverrideProgramEntryLabel</name>
@@ -990,7 +989,13 @@
       <name>$PROJ_DIR$\..\app_project.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\hal\hal_led.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\..\app\main.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\platform_mhl9.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\config\RTX_Conf_CM.c</name>
@@ -1054,17 +1059,8 @@
     </group>
     <group>
       <name>platform</name>
-      <group>
-        <name>mhl9</name>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\bsp\platform\mhl9\dev_led.c</name>
-        </file>
-      </group>
       <file>
         <name>$PROJ_DIR$\..\..\..\bsp\platform\platform.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\bsp\platform\platform_mhl9.c</name>
       </file>
     </group>
     <file>
@@ -1076,6 +1072,63 @@
     <file>
       <name>$PROJ_DIR$\..\config\app_cfg.h</name>
     </file>
+  </group>
+  <group>
+    <name>Kernel</name>
+    <group>
+      <name>RTX</name>
+      <group>
+        <name>IAR</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\kernel\CMSIS\RTOS\RTX\SRC\IAR\HAL_CM0.s</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\kernel\CMSIS\RTOS\RTX\SRC\IAR\SVC_Table.s</name>
+        </file>
+      </group>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\kernel\CMSIS\RTOS\RTX\SRC\HAL_CM.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_CMSIS.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_Event.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_List.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_Mailbox.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_MemBox.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_Memory.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_Mutex.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_Robin.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_Semaphore.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_System.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_Task.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_Time.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_Timer.c</name>
+      </file>
+    </group>
   </group>
   <group>
     <name>Startup</name>

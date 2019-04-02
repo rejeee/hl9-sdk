@@ -14,6 +14,7 @@
 Include Files
 ****/
 #include <stdint.h>
+#include <stdbool.h>
 
 /****
 Definitions
@@ -32,5 +33,9 @@ Global Functions
 void DevCfg_InitParam(void);
 void DevCfg_Recovery(void);
 void DevCfg_Display(void);
+
+/* User special parameters using param fields in @struct device_flash_t */
+void DevCfg_UserDefault(void);
+bool DevCfg_UserUpdate(uint8_t *data, uint32_t len);
 
 #endif

@@ -10,7 +10,6 @@
 #include "app_at.h"
 #include "at/at.h"
 #include "at/at_config.h"
-#include "platform/platform.h"
 #include "mac/node/mac_api.h"
 #include "mac/node/mac_radio.h"
 
@@ -80,7 +79,7 @@ static void App_Response(uint32_t status)
         case AT_STATUS_ERR:
             printk("\r\nER02\r\n");
             break;
-        case AT_STATUS_CH_BUSY:
+        case AT_STATUS_BUSY:
             printk("\r\nER03\r\n");
             break;
         case AT_STATUS_LEN_ERR:
@@ -102,7 +101,7 @@ static void App_Response(uint32_t status)
             if(gDevFlash.config.baudrate <= UART_BRATE_9600){
                 printk("\r\nER08\r\n");
             } else {
-                printk("\r\nOK\r\n");
+                UserDebugWrite((uint8_t *)"\r\nOK\r\n", 6);
                 osDelayMs(5); /* delay for pinkt OK */
                 PlatformSleep(gDevRam.sleep_secs);
             }
@@ -120,7 +119,7 @@ static void App_Response(uint32_t status)
             App_SoftReset();
             break;
         case AT_STATUS_T:
-            DevEnterAT(false);
+            UserEnterAT(false);
             printk("\r\nOK\r\n");
             break;
         case AT_STATUS_CFG:
@@ -135,12 +134,12 @@ static void App_Response(uint32_t status)
             }
             break;
         case AT_STATUS_UART:
-            printk("\r\nOK\r\n");
-            DebugReInit(gDevFlash.config.baudrate, gDevFlash.config.pari);
+            UserDebugWrite((uint8_t *)"\r\nOK\r\n", 6);
+            UserDebugInit(true, gDevFlash.config.baudrate, gDevFlash.config.pari);
             DevDebug_FlushAll(5);
             break;
         case AT_STATUS_SET_RF:
-            MacRadio_AbortRx();
+            MacRadio_UpdateRx(true);
             printk("\r\nOK\r\n");
             break;
         case AT_STATUS_RX_MODE:
@@ -161,17 +160,17 @@ static void App_Response(uint32_t status)
 static void ATTaskHandler(void const *p_arg)
 {
     int rev_len    = 0;
-    uint8_t recv_buf[DBG_UART_SIZE+1] = { 0 };
+    uint8_t recv_buf[MEM_POOL_BLOCK_SIZE+1] = { 0 };
 
     while (1) {
         /* memory get success */
-        rev_len = DevDebug_Read(recv_buf, DBG_UART_SIZE, OS_ALWAYS_DELAY);
+        rev_len = DevDebug_Read(recv_buf, MEM_POOL_BLOCK_SIZE, OS_ALWAYS_DELAY);
         if(gParam.at_mode){
             /* execute AT command */
             App_Response(AT_HandleFrame(recv_buf, rev_len));
         } else {
             if ((NULL != recv_buf) && (3 == rev_len) && (0 == strncmp("+++", (char *)recv_buf, 3))) {
-                DevEnterAT(true);
+                UserEnterAT(true);
                 printk("\r\nOK\r\n");
             } else {
                 MacRadio_TxProcess(recv_buf, rev_len);
@@ -186,7 +185,7 @@ Global Functions
 ****/
 void AT_Printf(const char *str, size_t len)
 {
-    DebugWrite((uint8_t *)str, len);
+    UserDebugWrite((uint8_t *)str, len);
     return;
 }
 

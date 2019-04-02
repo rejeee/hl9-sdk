@@ -1,6 +1,6 @@
 /*******************************************************************************
- * @file    dev_led.c
- * @brief   The common LED function
+ * @file    hal_led.c
+ * @brief   The special implemetation for common LED function
  *
  * @version 0.0.1
  *******************************************************************************
@@ -8,6 +8,10 @@
  * @author  Felix
  ******************************************************************************/
 #include "dev_led.h"
+
+#define LED_N_GPIO          GpioPortA
+#define LED1_PIN            GpioPin10
+#define LED2_PIN            GpioPin9
 
 void LED_Enable(bool enable)
 {

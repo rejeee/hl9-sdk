@@ -38,3 +38,4 @@ Thumbs.db
 *.crf
 *.linf
 *.dnx
+**/Exe/*.out

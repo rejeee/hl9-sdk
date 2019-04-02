@@ -55,7 +55,6 @@
 #define osDelayMs(x)            osDelay(x)
 
 /* TODO: */
-#define BSP_OS_SemReset(x)
 #define BSP_OS_SemPostISR       BSP_OS_SemPost
 
 #define OS_IRQ_CALLBACK(thread, event)  osSignalSet(thread, event)
@@ -90,91 +89,112 @@ bool BSP_OS_TaskCreate(osThreadId *ptr, const osThreadDef_t *def, void *argument
 /**
  * @brief Creates a sempahore to lock/unlock
  *
- * @param ptr       pointer to a semaphore control block
+ * @param p_sem     Pointer to a semaphore control block
  * @param count     Initial value of the semaphore
- * @param def       pointer to a semaphore definition
+ * @param def       Pointer to a semaphore definition
  *
  * @return  true  if the semaphore was created.
  *          false if the semaphore could not be created.
  */
-bool BSP_OS_SemCreate(osSemaphoreId *ptr, int32_t count, const osSemaphoreDef_t *def);
+bool BSP_OS_SemCreate(osSemaphoreId *p_sem, int32_t count, const osSemaphoreDef_t *def);
 
 /**
  * @brief Wait on a semaphore to become available
  *
- * @param ptr       pointer to a semaphore control block
+ * @param p_sem     Pointer to a semaphore control block
  * @param dly_ms    delay in miliseconds to wait on the semaphore
  *
  * @return  true  if the semaphore was acquire.
  *          false if the semaphore could not be acquire.
  */
-bool BSP_OS_SemWait(osSemaphoreId *ptr, uint32_t dly_ms);
+bool BSP_OS_SemWait(osSemaphoreId *p_sem, uint32_t dly_ms);
 
 /**
  * @brief Post a semaphore
  *
- * @param ptr       pointer to a semaphore control block
+ * @param p_sem     Pointer to a semaphore control block
  *
  * @return  true  if the semaphore was posted.
  *          false if the semaphore could not be posted.
  */
-bool BSP_OS_SemPost(osSemaphoreId *ptr);
+bool BSP_OS_SemPost(osSemaphoreId *p_sem);
 
 /**
  * @brief This function creates a mutex.
  *
- * @param ptr       is a pointer to the mutex to initialize.
- * @param def           is a pointer to the mutex definition.
+ * @param p_mutex      is a pointer to the semaphore to initialize.
+ *
+ * @return  true  if the semaphore was set.
+ *          false if the semaphore could not be set.
+ */
+bool BSP_OS_SemReset(osSemaphoreId *p_sem);
+
+/**
+ * @brief This function creates a mutex.
+ *
+ * @param p_mutex   is a pointer to the mutex to initialize.
+ * @param def       is a pointer to the mutex definition.
  *
  * @return  true  if the mutex was created.
  *          false if the mutex could not be created.
  */
-bool  BSP_OS_MutexCreate(osMutexId *ptr, const osMutexDef_t *def);
+bool  BSP_OS_MutexCreate(osMutexId *p_mutex, const osMutexDef_t *def);
 
 /**
  * @brief Wait on a mutex to become available
  *
- * @param ptr       pointer to a mutex control block
+ * @param p_mutex   Pointer to a mutex control block
  * @param dly_ms    delay in miliseconds to wait on the mutex
  *
  * @return  true  if the mutex was acquire.
  *          false if the mutex could not be acquire.
  */
-bool BSP_OS_MutexLock(osMutexId *ptr, uint32_t dly_ms);
+bool BSP_OS_MutexLock(osMutexId *p_mutex, uint32_t dly_ms);
 
 /**
  * @brief Post a mutex
  *
- * @param ptr       pointer to a mutex control block
+ * @param p_mutex   Pointer to a mutex control block
  *
  * @return  true  if the mutex was posted.
  *          false if the mutex could not be posted.
  */
-bool BSP_OS_MutexUnLock(osMutexId *ptr);
+bool BSP_OS_MutexUnLock(osMutexId *p_mutex);
 
 int32_t BSP_OS_FlagWait(int32_t flags, int32_t dly_ms);
 
 #if (osFeature_MessageQ == DEF_ENABLED)
+/**
+ * @brief Creates a message queue.
+ *
+ * @param p_q       is a pointer of the message queue
+ * @param def       is a pointer of the message definition.
+ * @param thread_id thread ID or NULL
+ *
+ * @Note    that it's also not possible to have a size higher than the maximum number of osMessageQDef_t available.
+ *
+ * @return  true  if the queue was created.
+ *          false if the queue could not be created.
+ */
+bool BSP_OS_QCreate(osMessageQId *p_q, const osMessageQDef_t *def, osThreadId thread_id);
 
-bool BSP_OS_QCreate(osMessageQId *ptr, const osMessageQDef_t *def, osThreadId thread_id);
-
-/*!
+/**
  * @brief Sends a message to a queue.
  *
  *
- * @param ptr       is a pointer to a message queue that must have been created
+ * @param p_q       is a pointer to a message queue that must have been created
  * @param msg       is a pointer to the message to send.
  * @param msg_size  specifies the size of the message (in bytes)
  *
  * @return  true  if the queue was posted.
  *          false if the queue could not be posted.
  */
-bool BSP_OS_QPost(osMessageQId *ptr, void *msg, int16_t msg_size);
+bool BSP_OS_QPost(osMessageQId *p_q, void *msg, int16_t msg_size);
 
-/*!
+/**
  * @brief Waits for a message to be sent to a queue.
  *
- * @param ptr           is a pointer to the message queue
+ * @param p_q           is a pointer to the message queue
  * @param dly_ms        is an optional timeout period (in clock ticks).
  *
  * @param msg_size      the size of the message will be received
@@ -185,7 +205,7 @@ bool BSP_OS_QPost(osMessageQId *ptr, void *msg, int16_t msg_size);
  *                            if 'ptr' is a NULL pointer or,
  *                            if you didn't pass a pointer to a queue.
  */
-void *BSP_OS_QPend(osMessageQId *ptr, uint32_t dly_ms, int16_t msg_size);
+void *BSP_OS_QPend(osMessageQId *p_q, uint32_t dly_ms, int16_t msg_size);
 
 #endif
 

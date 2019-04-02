@@ -19,8 +19,8 @@ Include Files
 
 /** @name AT command version */
 /*@{*/
-/** @brief AT command version 2 */
-#define AT_VER                          2
+/** @brief AT command version */
+#define AT_VER                          3
 /*@}*/
 
 /** @brief AT LOG Redefinition */
@@ -96,7 +96,7 @@ typedef enum
     AT_STATUS_UNKNOWN,          /**< command unknown */
     AT_STATUS_PARAM,            /**< parameter is error */
     AT_STATUS_ERR,              /**< execute command fail */
-    AT_STATUS_CH_BUSY,          /**< radio channel is busy */
+    AT_STATUS_BUSY,             /**< radio channel is busy */
     AT_STATUS_LEN_ERR,          /**< data length is error(overlap or empty) */
     AT_STATUS_MEM_ERR,          /**< no free memory */
     AT_STATUS_FLASH_ERR,        /**< R/W flash fail */
@@ -104,6 +104,7 @@ typedef enum
     AT_STATUS_UNUSED,
     AT_STATUS_RX_ERR,           /**< radio rx error */
     AT_STATUS_ACCESS,
+    AT_STATUS_CAD_ERR,             /**< CAD error */
     /**> NOTE: the follow code depend user customer funtion */
     AT_STATUS_H,                /**< AT command list */
     AT_STATUS_I,                /**< print device version */
@@ -115,6 +116,7 @@ typedef enum
     AT_STATUS_UART,             /**< change UART settings */
     AT_STATUS_SET_RF,
     AT_STATUS_SET_SYNC,         /**< transpond sync config into TX module */
+    AT_STATUS_SET_LDR,
     AT_STATUS_SLEEP,            /**< delay ok for sleep */
     AT_STATUS_RX_MODE           /**< need change RX printf style */
 } AT_STATUS;

@@ -24,7 +24,6 @@ static void MacTaskHandler(void const *p_arg);
 /* Task variables  */
 osThreadDef(MacTaskHandler, osPriorityNormal, 1, 0);
 #define APP_MAC_NAME   osThread(MacTaskHandler)
-osThreadId  gMacThreadID = NULL;
 
 /****
 Local Functions
@@ -49,7 +48,7 @@ static void RadioPrintRecv(bool format)
             }
             printk("\r\n");
         } else {
-            DebugWrite(gMacParam.frame + gMacParam.dataIdx, gMacParam.dataLen);
+            UserDebugWrite(gMacParam.frame + gMacParam.dataIdx, gMacParam.dataLen);
         }
     }
 
@@ -114,7 +113,7 @@ bool AppMacTask(void)
     bool result = Mac_Init();
 
     if(result){
-        result = BSP_OS_TaskCreate(&gMacThreadID, APP_MAC_NAME, NULL);
+        result = BSP_OS_TaskCreate(&gParam.macid, APP_MAC_NAME, NULL);
         if (true != result) {
             LOG_ERR(("NetTask start error.\r\n"));
         }

@@ -16,14 +16,12 @@ Include Files
 ****/
 #include "bsp.h"
 
-#define LED_N_GPIO          GpioPortA
-#define LED1_PIN            GpioPin10
-#define LED2_PIN            GpioPin9
-
 /* LED num */
 enum {
-  LED_RF_TX = 0x00,
-  LED_RF_RX
+  LED_NORMAL = 0x00,
+  LED_RF_TX,
+  LED_RF_RX,
+  LED_ULED
 };
 
 void LED_Enable(bool enable);
