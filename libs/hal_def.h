@@ -16,6 +16,10 @@ Include Files
 #include <stdint.h>
 #include <stdbool.h>
 
+#if defined(__cplusplus)
+extern "C" {
+#endif /* __cplusplus */
+
 /****
 Macro Defines
 ****/
@@ -71,6 +75,10 @@ typedef struct gps_data_t {
     FloatUnion longitude;
     int        hdop;
 } GpsDataType;
+
+#if defined(__cplusplus)
+}
+#endif /* __cplusplus */
 
 #endif
 

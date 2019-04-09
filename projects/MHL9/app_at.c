@@ -1,6 +1,6 @@
 /*******************************************************************************
  * @file    app_at.c
- * @brief   AT Command processd
+ * @brief   AT Command task
  *
  * @version 0.0.1
  *******************************************************************************
@@ -143,7 +143,7 @@ static void App_Response(uint32_t status)
             printk("\r\nOK\r\n");
             break;
         case AT_STATUS_RX_MODE:
-            MacRadio_AbortRx();
+            MacRadio_UpdateRx(true);
             printk("\r\nOK\r\n");
             break;
         case AT_STATUS_NONE:

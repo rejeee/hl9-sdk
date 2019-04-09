@@ -1,5 +1,5 @@
 /*******************************************************************************
- * @file    platform_mhl9.h
+ * @file    platform_mhl9.c
  * @brief   The HL9 platform interface implementation
  *
  * @version 0.0.1
@@ -116,6 +116,7 @@ void UserExternalGPIO(bool enable)
 bool UserDebugInit(bool reinit, uint32_t baudrateType, uint8_t pariType)
 {
     bool success = false;
+
     BSP_UART_TypeDef uart = {
         .cb = DebugCallback,
         .tx_port = DBG_TX_GPIO,
@@ -164,7 +165,6 @@ void UserEnterAT(bool enable)
 
 void UserCheckAT(void)
 {
-    static uint8_t prev = 1;
     if(gParam.at_switch){
         if(0 == GPIO_READ(AT_GPIO, AT_PIN)) {
             gParam.at_mode = 0;
@@ -172,10 +172,9 @@ void UserCheckAT(void)
             gParam.at_mode = 1;
         }
 
-        if(prev == 0 && prev != gParam.at_mode){
-            MacRadio_AbortRx();
+        if(1 == gParam.at_mode){
+            MacRadio_UpdateRx(true);
         }
-        prev = gParam.at_mode;
     }
 
     return;
@@ -190,7 +189,7 @@ void DevCfg_Display(void)
 {
     rps_t rps = gDevFlash.config.rps;
     uint32_t freq  = gDevFlash.config.txfreq;
-    uint32_t txpow = gDevFlash.config.txpow;
+    int8_t txpow = gDevFlash.config.txpow;
     char* bwstr = NULL;
     char* ldrstr = NULL;
     char* parstr = NULL;
@@ -259,6 +258,17 @@ void DevCfg_Display(void)
         break;
     }
 
+    /* Use RFO, limit power +14dBm */
+    if(gDevFlash.config.dtype & DTYPE_BITS_RFO){
+        if(txpow > 14){
+            txpow = 14;
+        }
+    } else {
+        if(txpow < 2){
+            txpow = 2;
+        }
+    }
+
     printk("NET:\t%s\r\nTFREQ:\t%0.1fMHz\r\nRFREQ:\t%0.1fMHz\r\n",
            gDevFlash.config.netmode ? "Node to Gateway":"Node to Node",
            (float)(freq/1e6),(float)(gDevFlash.config.rxfreq/1e6));
@@ -286,7 +296,12 @@ void DevCfg_Display(void)
 
 void DevCfg_UserDefault(void)
 {
-    /* TODO: */
+    /**
+     * Indicate if or not use RFO
+     *      false(0)  Use PA BOOST
+     *      true(1)   Use RFO
+     */
+    gDevFlash.config.dtype = 0;
 }
 
 /**

@@ -12,6 +12,10 @@
 
 #include "bsp.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @brief Initialize a UART to be use debug print
  *
@@ -52,5 +56,9 @@ uint32_t DevDebug_Read(uint8_t *data, uint32_t max_size, uint32_t timeout);
 void DevDebug_IRQHandler(uint32_t userData);
 
 void DevDebug_FlushAll(uint32_t timeout);
+
+#if defined(__cplusplus)
+}
+#endif /* __cplusplus */
 
 #endif

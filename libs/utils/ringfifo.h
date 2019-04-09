@@ -21,6 +21,10 @@ v0.0.1
 
 #include <stdint.h>
 
+#if defined(__cplusplus)
+extern "C" {
+#endif /* __cplusplus */
+    
 /**
  * the ring fifo structure
  */
@@ -67,5 +71,9 @@ int ringfifo_get(Ringfifo *rfifo);
  * @param   rfifo   A pointer to a struct Ringfifo
  */
 void ringfifo_flush(Ringfifo *rfifo);
+
+#if defined(__cplusplus)
+}
+#endif /* __cplusplus */
 
 #endif

@@ -16,6 +16,7 @@ Include Files
 #include <stdint.h>
 #include "sysctrl.h"
 #include "gpio.h"
+#include "adc.h"
 
 /*!
  * @brief ADC mode initialization

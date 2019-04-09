@@ -24,15 +24,6 @@ Global Functions
  */
 void AppInit(void)
 {
-    /* Initialize platform driver */
-
-    /* watchdog timeout 13.1s refer MCU datasheet */
-    if(RJ_ERR_OK != PlatformInit(0x0D)){
-        /* NOTE: here can use watchdog reboot */
-        NVIC_SystemReset();
-        return;
-    }
-
     /* Application module initialize, create and start task */
     if(false == AppTaskCreate()){
         /* NOTE: here can use watchdog reboot */

@@ -10,16 +10,16 @@
 #ifndef PLATFORM_DEV_CONFIG_H
 #define PLATFORM_DEV_CONFIG_H
 
-/****
-Include Files
-****/
 #include <stdint.h>
 #include <stdbool.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /****
 Definitions
 ****/
-#define FLASH_PARAM_VERSION     0x04
 
 #define FREQ_NEXT_STEP          200000U
 
@@ -37,5 +37,10 @@ void DevCfg_Display(void);
 /* User special parameters using param fields in @struct device_flash_t */
 void DevCfg_UserDefault(void);
 bool DevCfg_UserUpdate(uint8_t *data, uint32_t len);
+
+
+#if defined(__cplusplus)
+}
+#endif /* __cplusplus */
 
 #endif

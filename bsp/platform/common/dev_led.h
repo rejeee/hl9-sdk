@@ -7,14 +7,14 @@
  * @license Refer License or other description Docs
  * @author  Felix
  ******************************************************************************/
-
 #ifndef PLATFORM_DEV_LED_H
 #define PLATFORM_DEV_LED_H
 
-/****
-Include Files
-****/
 #include "bsp.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* LED num */
 enum {
@@ -27,5 +27,10 @@ enum {
 void LED_Enable(bool enable);
 void LED_ON(uint32_t led_num);
 void LED_OFF(uint32_t led_num);
+void LED_INVERT(uint32_t led_num);
+
+#if defined(__cplusplus)
+}
+#endif /* __cplusplus */
 
 #endif

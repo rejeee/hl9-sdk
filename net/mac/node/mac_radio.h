@@ -11,6 +11,7 @@ Include
 ****/
 #include <stdbool.h>
 #include "bsp.h"
+#include "radio/sx127x/sx127x_common.h"
 
 /****
 Define
@@ -18,6 +19,17 @@ Define
 #define DEFAULT_RADIO_TIMEOUT_MS    1000U
 #define MAC_DATA_MAX_LEN            228
 #define FREQ_NEXT_COUNT             8U
+
+/**
+ *                     scan  RFO  customized
+ *   |   7 ~ 6(RFU)  |  5  |  4  |   3~0    |
+ *
+ * Note:
+ *   4 bit:  0 PA Boost, 1 RFO
+ *   5 bit:  0 scan by level , 1 scan by cad
+ */
+#define DTYPE_BITS_RFO              0x10
+#define DTYPE_BITS_SCAN             0x20
 
 /** @brief Device LPWAN mode */
 enum {
@@ -30,7 +42,7 @@ enum {
 Global Functions
 ****/
 
-bool MacRadio_Init(void);
+bool MacRadio_Init(bool rfo);
 
 /**
  *@brief Wait radio to be idle, if radio is continue mode,
@@ -48,6 +60,8 @@ bool MacRadio_AbortRx(void);
  *@return true if success else false.
  */
 bool MacRadio_UpdateRx(bool update);
+
+void MacRadio_ScanSet(const uint32_t freq, RadioSettings_t *settings);
 
 /**
  *@return AT_STATUS

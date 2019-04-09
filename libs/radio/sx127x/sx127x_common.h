@@ -24,8 +24,8 @@ Macro definiens
 
 /** @name Radio HAL version */
 /*@{*/
-/** @brief Radio HAL version 16 */
-#define RADIO_HAL_VERSION       16U
+/** @brief Radio HAL version */
+#define RADIO_HAL_VERSION       17U
 /*@}*/
 
 /** @brief 32MHz XTAL frequency */
@@ -102,6 +102,7 @@ typedef struct
   uint32_t          opmode : 3;   /* RadioOpMode_t */
   uint32_t          fixlen : 11;  /* [0: variable; other: fixed length] */
   int8_t            power;        /* the output power [dbm] */
+  uint8_t           rfo;          /* rfo */
 } RadioSettings_t;
 
 #ifdef __cplusplus

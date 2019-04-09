@@ -62,6 +62,7 @@ enum {
     DATA_TYPE_TLV,
     DATA_TYPE_FRAME,
     DATA_TYPE_JSON,
+    DATA_TYPE_TLV_OLD,
     DATA_TYPE_NUM
 };
 

@@ -37,8 +37,8 @@ struct global_param_t {
 /****
 Global Variable
 ****/
-extern struct global_param_t gParam;
-extern volatile bool gEnableRadioRx;
+extern struct global_param_t    gParam;
+extern volatile bool            gEnableRadioRx;
 
 #if defined(__cplusplus)
 }

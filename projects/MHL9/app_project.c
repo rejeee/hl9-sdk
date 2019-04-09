@@ -15,7 +15,9 @@
 
 #define TASK_PERIOD_MS      100U    /* unit ms */
 
-char *gCodeVers = "1012";
+volatile bool   gEnableRadioRx  = true;
+
+char *gCodeVers = "1015";
 
 /****
 Local Variables
@@ -25,12 +27,12 @@ Local Variables
 Local Functions
 ****/
 
-/*!
+/**
  * @brief  Initialize all tasks
  *
  * @return  true if success else false
  */
-static bool App_Init(void)
+static bool AppTaskInit(void)
 {
     bool result = true;
 
@@ -68,13 +70,18 @@ bool AppTaskCreate(void)
 {
     bool success = false;
 
+    /* watchdog timeout 13.1s refer MCU datasheet */
+    if(RJ_ERR_OK != PlatformInit(0x0D)){
+        return false;
+    }
+
     success = UserDebugInit(false, gDevFlash.config.baudrate, gDevFlash.config.pari);
 
     printk("LoRa %s SDK, HAL V%u:%u, XTL:%d, Firmware V%s\r\n", MODULE_NAME,
            RADIO_HAL_VERSION, AT_VER, gParam.dev.extl, gCodeVers);
 
     if(success) {
-        success = App_Init();
+        success = AppTaskInit();
     }
 
     return success;

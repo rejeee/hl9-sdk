@@ -7,12 +7,11 @@
 extern "C" {
 #endif
 
-
 /**
  *  Debug Port Settings
  */
 #define DBG_UART_SIZE           255
-#define DBG_UART_NUM            BSP_LEUART0
+#define DBG_UART_NUM            BSP_LPUART0
 #define DBG_TX_GPIO             GpioPortB   /* TX: PB00 */
 #define DBG_TX_PIN              GpioPin0
 #define DBG_RX_GPIO             GpioPortB   /* RX: PB11 */

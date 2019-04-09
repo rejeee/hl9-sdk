@@ -10,20 +10,30 @@
 #ifndef PLATFORM_DEV_RADIO_H
 #define PLATFORM_DEV_RADIO_H
 
-/****
-Include Files
-****/
 #include <stdint.h>
 #include <stdbool.h>
 
-/*!
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* Init Radio RST GPIO */
+void DevRadioGPIORST(void);
+
+/**
+ * @param   enable      true is enable , false is disable
+ *
  * @brief Enable Radio GPIO and SPI
  */
 void DevRadioGPIO(bool enable);
 
-/*!
+/**
  * @brief IO interrupt service rutine
  */
-void DevRadioIRQHandler(uint8_t u8Param);
+void DevRadioIRQHandler(uint32_t u32Param);
+
+#if defined(__cplusplus)
+}
+#endif /* __cplusplus */
 
 #endif

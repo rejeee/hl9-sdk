@@ -38,7 +38,7 @@ extern struct mac_lorawan_t gMacParam;
 Global functions
 ****/
 
-bool Mac_Init(void);
+bool Mac_Init(bool rfo);
 
 /* AT query command */
 void Mac_queryCSQ(int16_t *rssi, int8_t *snr);

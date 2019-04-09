@@ -24,8 +24,8 @@ Include Files
  * @enum BSP_UART_NUM
  */
 typedef enum {
-    BSP_LEUART0 = 0,    /**<    LPUART0         */
-    BSP_LEUART1,        /**<    LPUART1         */
+    BSP_LPUART0 = 0,    /**<    LPUART0         */
+    BSP_LPUART1,        /**<    LPUART1         */
     BSP_UART0,          /**<    UART0           */
     BSP_UART1,          /**<    UART1           */
     BSP_UART_INVALID    /**<    Invalid UART    */
@@ -86,9 +86,9 @@ void BSP_UartRxEnable(BSP_UART_NUM num, bool enable);
  *
  * @param num     The number of UART with enum BSP_UART_NUM
  * @param data    the pointer of data buffer
- * @param size    the size of data buffer
+ * @param len     the length of data buffer
  */
-void BSP_UartSend(BSP_UART_NUM num, const uint8_t *data, uint32_t size);
+void BSP_UartSend(BSP_UART_NUM num, const uint8_t *data, uint32_t len);
 
 /**
  * @brief Get baudrate of baudrate type mapping

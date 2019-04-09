@@ -15,6 +15,10 @@
 #include <string.h>
 #include "hal_def.h"
 
+#if defined(__cplusplus)
+extern "C" {
+#endif /* __cplusplus */
+
 /**
  * @brief Set the random seed
  *
@@ -104,5 +108,9 @@ void bin2str(uint8_t *bin, uint32_t len, char *str);
  *
  */
 bool binIsTag(uint8_t tag, uint8_t *buf, uint32_t len);
+
+#if defined(__cplusplus)
+}
+#endif /* __cplusplus */
 
 #endif

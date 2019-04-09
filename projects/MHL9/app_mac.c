@@ -110,7 +110,7 @@ Global Functions
  */
 bool AppMacTask(void)
 {
-    bool result = Mac_Init();
+    bool result = Mac_Init(gDevFlash.config.dtype & DTYPE_BITS_RFO);
 
     if(result){
         result = BSP_OS_TaskCreate(&gParam.macid, APP_MAC_NAME, NULL);

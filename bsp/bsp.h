@@ -20,6 +20,11 @@
 #include "utils/util.h"
 #include "utils/ringfifo.h"
 
+#if defined(__cplusplus)
+extern "C" {
+#endif /* __cplusplus */
+
+
 /**
  * @brief the pointer of uart rx operation
  */
@@ -33,8 +38,9 @@ struct sp_uart_t
 /****
 Global Variables
 ****/
-extern char* gCodeVers;
-extern BSP_OS_SEM   gIRQSem;
+extern char*            gCodeVers;
+extern BSP_OS_SEM       gIRQSem;
+extern BSP_OS_SEM       gScanSem;
 
 /****
 Global Functions
@@ -45,7 +51,7 @@ void BSP_DelayMsWithDog(uint32_t dly_ms);
 
 void BSP_OS_RandSeed(uint32_t seed);
 
-uint32_t BSP_OS_Rand(void);
+uint32_t BSP_OS_Rand(uint32_t max);
 
 uint32_t BSP_UartSplitTime(uint32_t baudrateType);
 
@@ -53,6 +59,10 @@ uint32_t BSP_UartSplitTime(uint32_t baudrateType);
 /*@{*/
 int printk(const char *fmt_s, ...);
 /*@}*/
+
+#if defined(__cplusplus)
+}
+#endif /* __cplusplus */
 
 #endif
 

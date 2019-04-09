@@ -66,7 +66,7 @@ RJ_STATUS PlatformInit(uint32_t param);
 uint32_t PlatformSleep(uint32_t secs);
 
 /**
- * @TODO:The following code should be customized by the user
+ * @TODO:The following code must be implement by the user
  */
 
 /**
@@ -77,6 +77,10 @@ uint32_t PlatformSleep(uint32_t secs);
 void UserExternalGPIO(bool enable);
 
 /**
+ * @FIXME:The following code should be customized by the user
+ */
+
+/**
  * @brief Enable or disable external GPIO for user
  *
  * @param   reinit          true is reinit, false is first init
@@ -85,6 +89,8 @@ void UserExternalGPIO(bool enable);
  * @return  true if success else false.
  */
 bool UserDebugInit(bool reinit, uint32_t baudrateType, uint8_t pariType);
+
+void UserDebugDeInit(void);
 
 /**
  * @brief Write the data using the serial port initialized above

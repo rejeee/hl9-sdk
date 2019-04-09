@@ -15,11 +15,10 @@
 #include <string.h>
 #include "cmsis_os.h"
 
-/*
-********************************************************************************
-* Defines
-********************************************************************************
-*/
+#if defined(__cplusplus)
+extern "C" {
+#endif /* __cplusplus */
+
 #define  DEF_DISABLED           0U
 #define  DEF_ENABLED            1U
 
@@ -52,12 +51,10 @@
 #define osSaveCritical()
 #define osEnterCritical()       __disable_irq()
 #define osExitCritical()        __enable_irq()
+
 #define osDelayMs(x)            osDelay(x)
 
-/* TODO: */
 #define BSP_OS_SemPostISR       BSP_OS_SemPost
-
-#define OS_IRQ_CALLBACK(thread, event)  osSignalSet(thread, event)
 
 /*
 ********************************************************************************
@@ -69,7 +66,7 @@ typedef osSemaphoreId           BSP_OS_SEM;
 typedef osMutexId               BSP_OS_MUTEX;
 typedef osPoolId                BSP_OS_MPOOL;
 typedef osMessageQId            BSP_OS_MQ;
-typedef int32_t                 BSP_OS_FLAG;
+typedef osThreadId              BSP_OS_FLAG;
 
 #if (osFeature_Pool == DEF_ENABLED)
 typedef struct {
@@ -161,8 +158,6 @@ bool BSP_OS_MutexLock(osMutexId *p_mutex, uint32_t dly_ms);
  */
 bool BSP_OS_MutexUnLock(osMutexId *p_mutex);
 
-int32_t BSP_OS_FlagWait(int32_t flags, int32_t dly_ms);
-
 #if (osFeature_MessageQ == DEF_ENABLED)
 /**
  * @brief Creates a message queue.
@@ -214,5 +209,24 @@ bool BSP_OS_MemCreate(osPoolId *ptr, const osPoolDef_t *def);
 bool BSP_OS_MemGet(osPoolId *ptr, void **msg);
 bool BSP_OS_MemPut(osPoolId *ptr, void *p_blk);
 #endif
+
+/**
+ * @brief Post a FLAG
+ *
+ * @param ptid      Pointer to a thread
+ * @param evt       the value of FLAG to be post.
+ *
+ * @return  true  if the flag was posted.
+ *          false if the flag could not be posted.
+ */
+bool BSP_OS_FlagPost(osThreadId *ptid, int32_t evt);
+
+int32_t BSP_OS_FlagWait(void *arg, int32_t flags, int32_t dly_ms);
+
+bool BSP_OS_FlagClear(void *arg, int32_t evt);
+
+#if defined(__cplusplus)
+}
+#endif /* __cplusplus */
 
 #endif
