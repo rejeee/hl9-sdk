@@ -75,6 +75,11 @@ bool AppTaskCreate(void)
         return false;
     }
 
+    /* Low Energy Timer and DeepSleep init */
+    if(false == BSP_LPowerInit(gParam.dev.extl)){
+        return false;
+    }
+
     success = UserDebugInit(false, gDevFlash.config.baudrate, gDevFlash.config.pari);
 
     printk("LoRa %s SDK, HAL V%u:%u, XTL:%d, Firmware V%s\r\n", MODULE_NAME,
