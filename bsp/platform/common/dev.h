@@ -66,6 +66,18 @@ RJ_STATUS PlatformInit(uint32_t param);
 uint32_t PlatformSleep(uint32_t secs);
 
 /**
+ * @brief Set Chip enter low power mode(DeepSleep).
+ *
+ * @param ms       the chip wake up after millisecond.
+ *
+ * @return  true if @ms is arrived else false by IRQ wakeup
+ *
+ * @note    this @ms must not exceed WDT timeout
+ *          if @ms is zero, chip immediate return.
+ */
+bool PlatformSleepMs(uint32_t ms);
+
+/**
  * @TODO:The following code must be implement by the user
  */
 

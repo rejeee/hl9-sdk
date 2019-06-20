@@ -1,4 +1,4 @@
-/******************************************************************************
+/*******************************************************************************
  * @file    app_mac.c
  * @brief   the MAC task
  *
@@ -64,6 +64,8 @@ static void MacTaskHandler(void const *p_arg)
     while (1) {
         if(gDevFlash.config.lcp > 0 && gEnableRadioRx &&
            gDevFlash.config.baudrate <= UART_BRATE_9600){
+            /* if you need milliseconds level sleep */
+            /* PlatformSleepMs(1000 * gDevFlash.config.lcp); */
             PlatformSleep(gDevFlash.config.lcp);
         }
 

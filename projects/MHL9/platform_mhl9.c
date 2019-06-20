@@ -159,7 +159,7 @@ void UserEnterAT(bool enable)
     BSP_OS_MutexUnLock(&gParam.mutex);
     /* exit transparent */
     if(enable){
-        MacRadio_AbortRx();
+        MacRadio_UpdateRx(true);
     }
 }
 

@@ -30,7 +30,7 @@ extern "C" {
 #define UKEY_PIN                GpioPin5
 
 /****
-Global Variable
+Global Variables
 ****/
 extern BSP_OS_MQ        gUartQ;
 extern BSP_OS_MPOOL     gMemPool;

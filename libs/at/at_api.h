@@ -20,7 +20,7 @@ Include Files
 /** @name AT command version */
 /*@{*/
 /** @brief AT command version */
-#define AT_VER                          3
+#define AT_VER                          4
 /*@}*/
 
 /** @brief AT LOG Redefinition */

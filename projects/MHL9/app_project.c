@@ -17,7 +17,7 @@
 
 volatile bool   gEnableRadioRx  = true;
 
-char *gCodeVers = "1015";
+char *gCodeVers = "1016";
 
 /****
 Local Variables
@@ -76,7 +76,7 @@ bool AppTaskCreate(void)
     }
 
     /* Low Energy Timer and DeepSleep init */
-    if(false == BSP_LPowerInit(gParam.dev.extl)){
+    if(false == BSP_LPowerInit(false)){
         return false;
     }
 

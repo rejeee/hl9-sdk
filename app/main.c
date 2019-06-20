@@ -23,7 +23,7 @@ Global Funtion
 int main(void)
 {
     /* the first initialization operation */
-    if(false == BSP_OS_Init()){
+    if(false == BSP_OS_Init(false, false)){
         NVIC_SystemReset();
         return 1;
     }

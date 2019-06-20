@@ -1,6 +1,6 @@
 /******************************************************************************
  * @file    app_mac.h
- * @brief  the MAC task API
+ * @brief   the MAC task API
  *
  * @version 0.0.1
  *******************************************************************************
@@ -19,7 +19,7 @@ Include
 Global Functions
 ****/
 
-/*!
+/**
  * @brief  Create the MAC task
  */
 bool AppMacTask(void);

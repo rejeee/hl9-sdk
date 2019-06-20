@@ -14,7 +14,9 @@
 Include Files
 ****/
 #include <stdbool.h>
+#ifndef USE_NO_UART
 #include "uart.h"
+#endif
 #include "lpuart.h"
 #include "gpio.h"
 #include "hal_def.h"
@@ -26,8 +28,10 @@ Include Files
 typedef enum {
     BSP_LPUART0 = 0,    /**<    LPUART0         */
     BSP_LPUART1,        /**<    LPUART1         */
+#ifndef USE_NO_UART
     BSP_UART0,          /**<    UART0           */
     BSP_UART1,          /**<    UART1           */
+#endif
     BSP_UART_INVALID    /**<    Invalid UART    */
 } BSP_UART_NUM;
 

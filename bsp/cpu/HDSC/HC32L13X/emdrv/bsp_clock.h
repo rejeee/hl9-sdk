@@ -15,6 +15,7 @@ Include Files
 ****/
 #include "flash.h"
 #include "sysctrl.h"
+#include <stdbool.h>
 
 /**
  * @brief default unuse external high frequency
@@ -29,8 +30,11 @@ extern "C" {
 
 /**
  * @brief Chip clock initialize
+ *
+ * @param exth  use external high frequency
+ * @param extl  use external low frequency
  */
-void BSP_ClockInit(void);
+void BSP_ClockInit(bool exth, bool extl);
 
 /**
  * @todo Function has been not implemented yet.

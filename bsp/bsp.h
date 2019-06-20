@@ -45,7 +45,7 @@ extern BSP_OS_SEM       gScanSem;
 /****
 Global Functions
 ****/
-bool BSP_OS_Init(void);
+bool BSP_OS_Init(bool exth, bool extl);
 
 void BSP_DelayMsWithDog(uint32_t dly_ms);
 

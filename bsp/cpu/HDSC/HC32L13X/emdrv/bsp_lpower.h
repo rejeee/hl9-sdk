@@ -36,6 +36,18 @@ bool BSP_LPowerInit(bool extl);
  */
 bool BSP_LPowerSleep(const uint32_t secs);
 
+/**
+ * @brief Set Chip enter low power mode.
+ *
+ * @note: this @ms must not exceed WDT timeout
+ *
+ * @param ms    The chip wake up after delay millisecond
+ *              sec is zero, chip immediate return.
+ *
+ * @return  true if @ms is arrived else false by IRQ wakeup
+ */
+bool BSP_LPowerSleepMs(const uint32_t ms);
+
 void BSP_LPowerStop(void);
 
 /**

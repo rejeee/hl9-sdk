@@ -87,7 +87,7 @@ struct device_flash_t {
     uint32_t    lgt;                      /**> longitude */
     uint16_t    tprem;
     uint16_t    rprem;
-    uint16_t    lcp;                      /**> unit minute */
+    uint16_t    lcp;                      /**> unit second */
     uint16_t    lftime;                   /**> unit second */
     uint8_t     modem;                    /**> radio modem */
     uint8_t     tiq;
@@ -105,6 +105,9 @@ struct device_flash_t {
     uint8_t     lowRate;                  /**> low datarate optimize */
     uint8_t     pari;                     /**> UART odd or even */
     uint8_t     dtype;                    /**> data output format type */
+    uint8_t     rxw;                      /**>  RX window time */
+    uint8_t     tfix;
+    uint8_t     rfix;
     uint8_t     param[CFG_16BYTE_LEN];    /**> user parameters */
 
     uint8_t     flash_ver;                /**> flash structure version */
