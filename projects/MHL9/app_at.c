@@ -28,12 +28,9 @@ Local Functions
 ****/
 static void App_Help(void)
 {
-    /* Close interrupt ****/
     osSaveCritical();
-    /* Enter critical */
     osEnterCritical();
     AT_Help();
-    /* Exit critical */
     osExitCritical();
 }
 
@@ -173,7 +170,12 @@ static void ATTaskHandler(void const *p_arg)
                 UserEnterAT(true);
                 printk("\r\nOK\r\n");
             } else {
-                MacRadio_TxProcess(recv_buf, rev_len);
+                /**
+                 * tx_callback_t function can be use to measure VCC
+                 * example:
+                 *      MacRadio_TxProcess(recv_buf, rev_len, Dev_GetVol);
+                 */
+                MacRadio_TxProcess(recv_buf, rev_len, NULL);
             }
         }
         gEnableRadioRx = true;
@@ -192,12 +194,16 @@ void AT_Printf(const char *str, size_t len)
 /* return refer @AT_STATUS */
 uint32_t AT_TxProcess(bool forward, uint8_t *buf, uint32_t len)
 {
+    uint32_t status = AT_STATUS_UNUSED;
     if(forward){
-        return MacRadio_TxProcess(buf, len);
+        /* FIXME: If necessary */
+        /* MacRadio_TxProcess(recv_buf, rev_len, Dev_GetVol); */
+        status = MacRadio_TxProcess(buf, len, NULL);
     } else {
-        /* TODO: set customer parameters */
-        return AT_STATUS_UNUSED;
+        /* TODO: set customer parameters with AT+CMD =<x> */
     }
+
+    return status;
 }
 
 /*!

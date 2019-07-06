@@ -70,8 +70,8 @@ bool AppTaskCreate(void)
 {
     bool success = false;
 
-    /* watchdog timeout 13.1s refer MCU datasheet */
-    if(RJ_ERR_OK != PlatformInit(0x0D)){
+    /* watchdog timeout 6.5s refer MCU datasheet */
+    if(RJ_ERR_OK != PlatformInit(0x0C)){
         return false;
     }
 
@@ -94,6 +94,8 @@ bool AppTaskCreate(void)
 
 void AppTaskExtends(void)
 {
+    Dev_GetVol();
+
     while (1) {
         APP_FeedDog();
         AppTaskManager();

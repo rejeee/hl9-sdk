@@ -35,6 +35,8 @@ Global Variables
 extern BSP_OS_MQ        gUartQ;
 extern BSP_OS_MPOOL     gMemPool;
 
+void Dev_GetVol(void);
+
 #if defined(__cplusplus)
 }
 #endif /* __cplusplus */

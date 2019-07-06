@@ -269,6 +269,8 @@ void DevCfg_Display(void)
         }
     }
 
+    osSaveCritical();
+    osEnterCritical();
     printk("NET:\t%s\r\nTFREQ:\t%0.1fMHz\r\nRFREQ:\t%0.1fMHz\r\n",
            gDevFlash.config.netmode ? "Node to Gateway":"Node to Node",
            (float)(freq/1e6),(float)(gDevFlash.config.rxfreq/1e6));
@@ -278,19 +280,22 @@ void DevCfg_Display(void)
            gDevFlash.config.txsf,gDevFlash.config.rxsf,rps.cr + 4,
            gDevFlash.config.modem?"LORA":"FSK",
            gDevFlash.config.syncword);
-    printk("PREM:\t%u,%u\r\nCRC:\t%s\r\nTIQ:\t%s\r\nRIQ:\t%s\r\n",
+    printk("PREM:\t%u,%u\r\nFIX:\t%u,%u\r\nCRC:\t%s\r\nTIQ:\t%s\r\nRIQ:\t%s\r\n",
            gDevFlash.config.tprem,gDevFlash.config.rprem,
+           gDevFlash.config.tfix,gDevFlash.config.rfix,
            rps.crc?"ON":"OFF",
            gDevFlash.config.tiq?"ON":"OFF",
            gDevFlash.config.riq?"ON":"OFF");
     printk("SEQ:\t%s\r\nIP:\t%s\r\nAES:\t%s\r\nACK:\t%s\r\n"
            "LDR:\t%s\r\nPAR:\t%s\r\n"
-           "LCP:\t%u\r\nLFT:\t%u\r\n",
+           "LCP:\t%u\r\nLFT:\t%u\r\nTYPE:\t0x%02X\r\n",
            gDevFlash.config.seqMode?"ON":"OFF",
            gDevFlash.config.ipMode?"ON":"OFF",
            notAes?"OFF":"ON",
            gDevFlash.config.ack?"ON":"OFF",ldrstr,parstr,
-           gDevFlash.config.lcp, gDevFlash.config.lftime);
+           gDevFlash.config.lcp, gDevFlash.config.lftime,
+           gDevFlash.config.dtype);
+    osExitCritical();
     return;
 }
 
@@ -302,6 +307,23 @@ void DevCfg_UserDefault(void)
      *      true(1)   Use RFO
      */
     gDevFlash.config.dtype = 0;
+}
+
+void Dev_GetVol(void)
+{
+    /**
+     * NOTE:  you can wait a moment for measure VCC after execute TX, but you
+     *        should not be too long and must be less than TX Air Time.
+     *
+     * for example: Delay for a short time for radio TX work,
+     *              you can measure voltage at maximum power consumption
+     *        osDelayMs(5);
+     */
+
+    /* voltage value */
+    BSP_ADC_Enable();
+    gParam.dev.vol = (3 * BSP_ADC_Sample(AdcAVccDiV3Input));
+    BSP_ADC_Disable();
 }
 
 /**

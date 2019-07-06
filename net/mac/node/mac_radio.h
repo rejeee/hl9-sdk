@@ -38,6 +38,9 @@ enum {
     NET_MODE_NUM,           /**< all mode number */
 };
 
+/** @brief the callback for user-specific function after execute radio transmit. */
+typedef void (*tx_callback_t)(void);
+
 /****
 Global Functions
 ****/
@@ -66,7 +69,7 @@ void MacRadio_ScanSet(const uint32_t freq, RadioSettings_t *settings);
 /**
  *@return AT_STATUS
  */
-uint32_t MacRadio_TxProcess(uint8_t *buf, uint32_t len);
+uint32_t MacRadio_TxProcess(uint8_t *buf, uint32_t len, tx_callback_t cb);
 uint32_t MacRadio_RxProcess(uint8_t rxmode);
 uint32_t MacRadio_CadProcess(uint8_t rxmode);
 

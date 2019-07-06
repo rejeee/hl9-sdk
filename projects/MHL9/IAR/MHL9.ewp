@@ -322,6 +322,7 @@
           <state>$PROJ_DIR$\..\..\..\bsp\cpu\HDSC</state>
           <state>$PROJ_DIR$\..\..\..\bsp\cpu\HDSC\HC32L13X</state>
           <state>$PROJ_DIR$\..\..\..\bsp\cpu\HDSC\HC32L13X\driver\inc</state>
+          <state>$PROJ_DIR$\..\..\..\bsp\platform</state>
           <state>$PROJ_DIR$\..\..\..\bsp\platform\common</state>
           <state>$PROJ_DIR$\..\..\..\libs</state>
           <state>$PROJ_DIR$\..\..\..\app</state>
@@ -980,25 +981,7 @@
       <name>$PROJ_DIR$\..\..\..\app\app.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\app_at.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\app_mac.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\app_project.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\hal\hal_led.c</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\..\..\..\app\main.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\platform_mhl9.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\config\RTX_Conf_CM.c</name>
     </file>
   </group>
   <group>
@@ -1072,6 +1055,15 @@
     <file>
       <name>$PROJ_DIR$\..\config\app_cfg.h</name>
     </file>
+    <file>
+      <name>$PROJ_DIR$\..\config\RTX_Conf_CM.c</name>
+    </file>
+  </group>
+  <group>
+    <name>HAL</name>
+    <file>
+      <name>$PROJ_DIR$\..\hal\hal_led.c</name>
+    </file>
   </group>
   <group>
     <name>Kernel</name>
@@ -1140,6 +1132,21 @@
     </group>
     <file>
       <name>$PROJ_DIR$\..\..\..\bsp\cpu\HDSC\HC32L13X\system_hc32l13x.c</name>
+    </file>
+  </group>
+  <group>
+    <name>User</name>
+    <file>
+      <name>$PROJ_DIR$\..\app_at.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\app_mac.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\app_project.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\platform_mhl9.c</name>
     </file>
   </group>
 </project>
