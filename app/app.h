@@ -15,12 +15,6 @@ Include Files
 ****/
 #include "platform/platform.h"
 
-#if DISABLE_WDOG
-#define APP_FeedDog()
-#else
-#define APP_FeedDog()               BSP_WatchdogFeed()
-#endif
-
 /****
 Global Functions
 ****/

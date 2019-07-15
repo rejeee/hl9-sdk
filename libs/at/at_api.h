@@ -23,9 +23,6 @@ Include Files
 #define AT_VER                          4
 /*@}*/
 
-/** @brief AT LOG Redefinition */
-#define AT_LOG                          AT_Printf
-
 /** @brief AT command minimal length */
 #define AT_CMD_MIN_LEN                  4U
 
@@ -94,18 +91,18 @@ typedef enum
 {
     AT_STATUS_NONE     = 0x00,  /**< no response need print */
     AT_STATUS_OK,               /**< respone "OK" */
-    AT_STATUS_UNKNOWN,          /**< command unknown */
-    AT_STATUS_PARAM,            /**< parameter is error */
-    AT_STATUS_ERR,              /**< execute command fail */
-    AT_STATUS_BUSY,             /**< radio channel is busy */
-    AT_STATUS_LEN_ERR,          /**< data length is error(overlap or empty) */
-    AT_STATUS_MEM_ERR,          /**< no free memory */
-    AT_STATUS_FLASH_ERR,        /**< R/W flash fail */
-    AT_STATUS_TIMEOUT,
-    AT_STATUS_UNUSED,
+    AT_STATUS_UNKNOWN,          /**< ER00 command unknown */
+    AT_STATUS_PARAM,            /**< ER01 parameter is error */
+    AT_STATUS_ERR,              /**< ER02 execute command fail */
+    AT_STATUS_BUSY,             /**< ER03 radio channel is busy */
+    AT_STATUS_LEN_ERR,          /**< ER04 length is error(overlap or empty) */
+    AT_STATUS_FLASH_ERR,        /**< ER05 R/W flash fail */
+    AT_STATUS_MEM_ERR,          /**< ER06 no free memory */
+    AT_STATUS_TIMEOUT,          /**< ER07 TX timeout */
+    AT_STATUS_UNUSED,           /**< ER08 cmd unsupport */
+    AT_STATUS_ACCESS,           /**< ER09 cannot access */
     AT_STATUS_RX_ERR,           /**< radio rx error */
-    AT_STATUS_ACCESS,
-    AT_STATUS_CAD_ERR,             /**< CAD error */
+    AT_STATUS_CAD_ERR,          /**< CAD error */
     /**> NOTE: the follow code depend user customer funtion */
     AT_STATUS_H,                /**< AT command list */
     AT_STATUS_I,                /**< print device version */
@@ -131,12 +128,19 @@ extern const uint32_t gDevFlashSize;
 /*@{*/
 
 /**
+ * @brief  the AT Binary Log printf callback, must implement
+ *
+ * @param   ptr     the pointer of binary data
+ * @param   len     the length of binary data
+ */
+void AT_LOG(const uint8_t *ptr, size_t len);
+
+/**
  * @brief  the AT printf callback, must implement
  *
  * @param   str     the pointer of string to be printf output
- * @param   len     the length of string to be printf output
  */
-void AT_Printf(const char *str, size_t len);
+void AT_Printf(const char *str);
 
 /**
  * @brief  the AT+TX command callback

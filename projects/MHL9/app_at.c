@@ -26,6 +26,11 @@ osThreadId  sATThreadID = NULL;
 /****
 Local Functions
 ****/
+static void AppAtResp(const char *str)
+{
+    UserDebugWrite((uint8_t *)str, strlen(str));
+}
+
 static void App_Help(void)
 {
     osSaveCritical();
@@ -36,25 +41,23 @@ static void App_Help(void)
 
 static void App_Information(void)
 {
+    osSaveCritical();
+    osEnterCritical();
     printk("\r\n+ATI:%s,%s\r\n", HAL_VER, gCodeVers);
+    osExitCritical();
 }
 
 static void App_Recovery(void)
 {
-    /* restore default configuration */
     DevCfg_Recovery();
-    printk("\r\nOK\r\n");
-    osDelayMs(5);
-    /* Reset system */
+    AppAtResp("\r\nOK\r\n");
     NVIC_SystemReset();
     return;
 }
 
 static void App_SoftReset(void)
 {
-    printk("\r\nOK\r\n");
-    osDelayMs(5);
-    /* Reset system */
+    AppAtResp("\r\nOK\r\n");
     NVIC_SystemReset();
     return;
 }
@@ -65,41 +68,40 @@ static void App_Response(uint32_t status)
     int8_t     snr = 0;
     switch(status){
         case AT_STATUS_OK:
-            printk("\r\nOK\r\n");
+            AppAtResp("\r\nOK\r\n");
             break;
         case AT_STATUS_UNKNOWN:
-            printk("\r\nER00\r\n");
+            AppAtResp("\r\nER00\r\n");
             break;
         case AT_STATUS_PARAM:
-            printk("\r\nER01\r\n");
+            AppAtResp("\r\nER01\r\n");
             break;
         case AT_STATUS_ERR:
-            printk("\r\nER02\r\n");
+            AppAtResp("\r\nER02\r\n");
             break;
         case AT_STATUS_BUSY:
-            printk("\r\nER03\r\n");
+            AppAtResp("\r\nER03\r\n");
             break;
         case AT_STATUS_LEN_ERR:
-            printk("\r\nER04\r\n");
+            AppAtResp("\r\nER04\r\n");
             break;
         case AT_STATUS_FLASH_ERR:
-            printk("\r\nER05\r\n");
+            AppAtResp("\r\nER05\r\n");
             break;
         case AT_STATUS_MEM_ERR:
-            printk("\r\nER06\r\n");
+            AppAtResp("\r\nER06\r\n");
             break;
         case AT_STATUS_TIMEOUT:
-            printk("\r\nER07\r\n");
+            AppAtResp("\r\nER07\r\n");
             break;
         case AT_STATUS_UNUSED:
-            printk("\r\nER08\r\n");
+            AppAtResp("\r\nER08\r\n");
             break;
         case AT_STATUS_SLEEP:
             if(gDevFlash.config.baudrate <= UART_BRATE_9600){
-                printk("\r\nER08\r\n");
+                AppAtResp("\r\nER08\r\n");
             } else {
-                UserDebugWrite((uint8_t *)"\r\nOK\r\n", 6);
-                osDelayMs(5); /* delay for pinkt OK */
+                AppAtResp("\r\nOK\r\n");
                 PlatformSleep(gDevRam.sleep_secs);
             }
             break;
@@ -117,7 +119,7 @@ static void App_Response(uint32_t status)
             break;
         case AT_STATUS_T:
             UserEnterAT(false);
-            printk("\r\nOK\r\n");
+            AppAtResp("\r\nOK\r\n");
             break;
         case AT_STATUS_CFG:
             DevCfg_Display();
@@ -127,21 +129,21 @@ static void App_Response(uint32_t status)
             if(snr || rssi){
                 printk("\r\n+CSQ:%d,%d\r\n", snr, rssi);
             } else {
-                printk("\r\nER09\r\n");
+                AppAtResp("\r\nER09\r\n");
             }
             break;
         case AT_STATUS_UART:
-            UserDebugWrite((uint8_t *)"\r\nOK\r\n", 6);
+            AppAtResp("\r\nOK\r\n");
             UserDebugInit(true, gDevFlash.config.baudrate, gDevFlash.config.pari);
             DevDebug_FlushAll(5);
             break;
         case AT_STATUS_SET_RF:
             MacRadio_UpdateRx(true);
-            printk("\r\nOK\r\n");
+            AppAtResp("\r\nOK\r\n");
             break;
         case AT_STATUS_RX_MODE:
             MacRadio_UpdateRx(true);
-            printk("\r\nOK\r\n");
+            AppAtResp("\r\nOK\r\n");
             break;
         case AT_STATUS_NONE:
         default:
@@ -185,9 +187,15 @@ static void ATTaskHandler(void const *p_arg)
 /****
 Global Functions
 ****/
-void AT_Printf(const char *str, size_t len)
+void AT_Printf(const char *str)
 {
-    UserDebugWrite((uint8_t *)str, len);
+    UserDebugWrite((uint8_t *)str, strlen(str));
+    return;
+}
+
+void AT_LOG(const uint8_t *ptr, size_t len)
+{
+    UserDebugWrite(ptr, len);
     return;
 }
 

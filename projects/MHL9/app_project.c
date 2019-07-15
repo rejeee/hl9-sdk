@@ -17,7 +17,7 @@
 
 volatile bool   gEnableRadioRx  = true;
 
-char *gCodeVers = "1016";
+char *gCodeVers = "1017";
 
 /****
 Local Variables

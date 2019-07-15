@@ -25,7 +25,7 @@ Macro definiens
 /** @name Radio HAL version */
 /*@{*/
 /** @brief Radio HAL version */
-#define RADIO_HAL_VERSION       17U
+#define RADIO_HAL_VERSION       18U
 /*@}*/
 
 /** @brief 32MHz XTAL frequency */

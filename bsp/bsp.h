@@ -24,6 +24,12 @@
 extern "C" {
 #endif /* __cplusplus */
 
+#if DISABLE_WDOG
+#define APP_FeedDog()
+#else
+#define APP_FeedDog()               BSP_WatchdogFeed()
+#endif
+
 
 /**
  * @brief the pointer of uart rx operation
