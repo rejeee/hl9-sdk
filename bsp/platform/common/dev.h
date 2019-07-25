@@ -2,7 +2,7 @@
  * @file    dev.h
  * @brief   The common platform define
  *
- * @version 0.0.1
+ * @version 1.0.0
  *******************************************************************************
  * @license Refer License or other description Docs
  * @author  Felix
@@ -11,7 +11,7 @@
 #define PLATFORM_DEV_H
 
 #include "bsp.h"
-#include "common/dev_debug.h"
+#include "common/dev_uart.h"
 #include "common/dev_config.h"
 #include "common/dev_radio.h"
 #include "common/dev_led.h"

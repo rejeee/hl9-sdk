@@ -3,7 +3,7 @@
  * @brief   The common platform interface for embedded devices
  *          This is a convenience header file for defining difference board.
  *
- * @version 0.0.1
+ * @version 1.0.0
  *******************************************************************************
  * @license Refer License or other description Docs
  * @author  Felix

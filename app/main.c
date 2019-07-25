@@ -2,7 +2,7 @@
  * @file    main.c
  * @brief   the entry of current program
  *
- * @version 0.0.2
+ * @version 1.0.0
  *******************************************************************************
  * @license Refer License or other description Docs
  * @author  Felix

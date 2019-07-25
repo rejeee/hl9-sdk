@@ -2,7 +2,7 @@
  * @file    app_project.c
  * @brief   Project application interface
  *
- * @version 0.0.1
+ * @version 1.0.0
  *******************************************************************************
  * @license Refer License or other description Docs
  * @author  Felix
@@ -17,11 +17,15 @@
 
 volatile bool   gEnableRadioRx  = true;
 
-char *gCodeVers = "1017";
+char *gCodeVers = "1018";
 
 /****
 Local Variables
 ****/
+osSemaphoreDef(dgbIRQSem);
+#define GLOBAL_IRQ_DBG     osSemaphore(dgbIRQSem)
+
+BSP_OS_SEM      gDbgSem = {0};
 
 /****
 Local Functions
@@ -80,7 +84,11 @@ bool AppTaskCreate(void)
         return false;
     }
 
-    success = UserDebugInit(false, gDevFlash.config.baudrate, gDevFlash.config.pari);
+    if (false == BSP_OS_SemCreate(&gDbgSem, 0, GLOBAL_IRQ_DBG)) {
+        return false;
+    }
+
+    success = UserDebugInit(false, gDevFlash.config.prop.bdrate, gDevFlash.config.prop.pari);
 
     printk("LoRa %s SDK, HAL V%u:%u, XTL:%d, Firmware V%s\r\n", MODULE_NAME,
            RADIO_HAL_VERSION, AT_VER, gParam.dev.extl, gCodeVers);

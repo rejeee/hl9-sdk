@@ -1,30 +1,27 @@
 /*******************************************************************************
- * @file bsp_adc.h
- * @brief The ADC Driver API
+ * @file crc.c
+ * @brief  A CRC API
  *
- * @version 0.0.1
+ * @version 1.0.0
  *******************************************************************************
  * @license Refer License or other description Docs
  * @author  Felix
  ******************************************************************************/
-#ifndef BSP_CPU_ADC_H
-#define BSP_CPU_ADC_H
+#ifndef UTILS_CRC_H
+#define UTILS_CRC_H
 
-/****
-Include Files
-****/
 #include <stdint.h>
-#include "sysctrl.h"
-#include "gpio.h"
-#include "adc.h"
 
-/*!
- * @brief ADC mode initialization
- */
-void BSP_ADC_Enable(void);
+#if defined(__cplusplus)
+extern "C" {
+#endif /* __cplusplus */
 
-void BSP_ADC_Disable(void);
+uint16_t cal_crc16(const uint8_t *ptr, const uint32_t len);
 
-uint32_t BSP_ADC_Sample(uint8_t channel);
+uint16_t modbus_crc16(const uint8_t *ptr, const uint8_t len);
+
+#if defined(__cplusplus)
+}
+#endif /* __cplusplus */
 
 #endif

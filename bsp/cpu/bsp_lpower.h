@@ -2,7 +2,7 @@
  * @file    bsp_lowpower.h
  * @brief   The LowPower function of special device platform
  *
- * @version 0.0.1
+ * @version 1.0.0
  *******************************************************************************
  * @license Refer License or other description Docs
  * @author  Felix
@@ -14,8 +14,7 @@
 Include Files
 ****/
 #include <stdbool.h>
-#include "lpt.h"
-#include "lpm.h"
+#include <stdint.h>
 
 /**
  * @brief Chip lowpower mode initialization

@@ -2,7 +2,7 @@
  * @file    app_at.h
  * @brief   AT Command task
  *
- * @version 0.0.1
+ * @version 1.0.0
  *******************************************************************************
  * @license Refer License or other description Docs
  * @author  Felix

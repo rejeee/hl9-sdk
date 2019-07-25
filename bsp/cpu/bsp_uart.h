@@ -2,7 +2,7 @@
  * @file    bsp_uart.h
  * @brief   UART application interface
  *
- * @version 0.0.1
+ * @version 1.0.0
  *******************************************************************************
  * @license Refer License or other description Docs
  * @author  Felix
@@ -10,54 +10,13 @@
 #ifndef BSP_CPU_UART_H
 #define BSP_CPU_UART_H
 
-/****
-Include Files
-****/
+#if defined(__cplusplus)
+extern "C" {
+#endif /* __cplusplus */
+
 #include <stdbool.h>
-#ifndef USE_NO_UART
-#include "uart.h"
-#endif
-#include "lpuart.h"
-#include "gpio.h"
 #include "hal_def.h"
-
-/**
- * @brief UART NO.
- * @enum BSP_UART_NUM
- */
-typedef enum {
-    BSP_LPUART0 = 0,    /**<    LPUART0         */
-    BSP_LPUART1,        /**<    LPUART1         */
-#ifndef USE_NO_UART
-    BSP_UART0,          /**<    UART0           */
-    BSP_UART1,          /**<    UART1           */
-#endif
-    BSP_UART_INVALID    /**<    Invalid UART    */
-} BSP_UART_NUM;
-
-/** @brief UART transfer callback function. */
-typedef void (*uart_callback_t)(uint32_t userData);
-
-/**
- * @brief UART initialization structure.
- * @struct BSP_UART_TypeDef
- */
-typedef struct
-{
-    uart_callback_t     cb;
-    en_gpio_port_t  	tx_port;
-    en_gpio_pin_t   	tx_pin;
-    en_gpio_port_t  	rx_port;
-    en_gpio_pin_t   	rx_pin;
-    en_gpio_af_t    	af;
-    BSP_UART_NUM        num;
-    uint8_t             bdtype;
-    uint8_t    	        pri;
-} BSP_UART_TypeDef;
-
-/****
-Global Variables
-****/
+#include "em_device.h"
 
 /****
 Function Declaration
@@ -111,5 +70,9 @@ uint32_t BSP_UartGetBaudRate(uint8_t bdtype);
  *
  */
 void BSP_UartPortEnable(const BSP_UART_TypeDef *ptr, bool enable);
+
+#if defined(__cplusplus)
+}
+#endif /* __cplusplus */
 
 #endif

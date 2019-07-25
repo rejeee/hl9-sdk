@@ -2,7 +2,7 @@
  * @file    dev_config.h
  * @brief   The platform device flash configuration API
  *
- * @version 0.0.1
+ * @version 1.0.0
  *******************************************************************************
  * @license Refer License or other description Docs
  * @author  Felix

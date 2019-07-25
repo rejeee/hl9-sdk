@@ -2,7 +2,7 @@
  * @file    hal_def.h
  * @brief   hardware abstract layder type definitions
  *
- * @version 1.0
+ * @version 1.0.0
  *******************************************************************************
  * @license Refer License or other description Docs
  * @author  Felix

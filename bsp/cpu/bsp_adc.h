@@ -1,19 +1,28 @@
 /*******************************************************************************
- * @file bsp_pca.h
- * @brief PCA Interface driver
+ * @file bsp_adc.h
+ * @brief The ADC Driver API
  *
- * @version 0.0.1
+ * @version 1.0.0
  *******************************************************************************
  * @license Refer License or other description Docs
  * @author  Felix
  ******************************************************************************/
-#ifndef BSP_CPU_PCA_H
-#define BSP_CPU_PCA_H
+#ifndef BSP_CPU_ADC_H
+#define BSP_CPU_ADC_H
 
-#include <stdbool.h>
-#include "pca.h"
-#include "gpio.h"
+/****
+Include Files
+****/
+#include <stdint.h>
+#include "em_device.h"
 
-bool BSP_PCA_PwmInit(en_pca_module_t pcaMode);
+/**
+ * @brief ADC mode initialization
+ */
+void BSP_ADC_Enable(void);
+
+void BSP_ADC_Disable(void);
+
+uint32_t BSP_ADC_Sample(uint8_t channel);
 
 #endif

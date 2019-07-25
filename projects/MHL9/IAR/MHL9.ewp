@@ -89,7 +89,7 @@
         </option>
         <option>
           <name>OGChipSelectEditMenu</name>
-          <state>HC32L130F8UA	HDSC HC32L130F8UA</state>
+          <state>Default	None</state>
         </option>
         <option>
           <name>GenLowLevelInterface</name>
@@ -149,7 +149,7 @@
         </option>
         <option>
           <name>GFPUDeviceSlave</name>
-          <state>HC32L130F8UA	HDSC HC32L130F8UA</state>
+          <state>Default	None</state>
         </option>
         <option>
           <name>FPU2</name>

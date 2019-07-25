@@ -40,4 +40,14 @@
 #define  HAL_VER                "3"
 #define  MODULE_NAME        "M-HL9"
 
+/*
+********************************************************************************
+*           DEBUG CONFIGURATION
+********************************************************************************
+*/
+#define  LOG_ERR(x)
+#define  LOG_INFO(x)
+#define  LOG_DEBUG(x)
+#define  LOG_TRAC(x)
+
 #endif

@@ -2,7 +2,7 @@
  * @file    app_at.c
  * @brief   AT Command task
  *
- * @version 0.0.1
+ * @version 1.0.0
  *******************************************************************************
  * @license Refer License or other description Docs
  * @author  Felix
@@ -41,10 +41,7 @@ static void App_Help(void)
 
 static void App_Information(void)
 {
-    osSaveCritical();
-    osEnterCritical();
     printk("\r\n+ATI:%s,%s\r\n", HAL_VER, gCodeVers);
-    osExitCritical();
 }
 
 static void App_Recovery(void)
@@ -98,7 +95,7 @@ static void App_Response(uint32_t status)
             AppAtResp("\r\nER08\r\n");
             break;
         case AT_STATUS_SLEEP:
-            if(gDevFlash.config.baudrate <= UART_BRATE_9600){
+            if(gDevFlash.config.prop.bdrate <= UART_BRATE_9600){
                 AppAtResp("\r\nER08\r\n");
             } else {
                 AppAtResp("\r\nOK\r\n");
@@ -134,8 +131,8 @@ static void App_Response(uint32_t status)
             break;
         case AT_STATUS_UART:
             AppAtResp("\r\nOK\r\n");
-            UserDebugInit(true, gDevFlash.config.baudrate, gDevFlash.config.pari);
-            DevDebug_FlushAll(5);
+            UserDebugInit(true, gDevFlash.config.prop.bdrate, gDevFlash.config.prop.pari);
+            DevUART_FlushAll(&gDebugUart, 5);
             break;
         case AT_STATUS_SET_RF:
             MacRadio_UpdateRx(true);
@@ -153,7 +150,7 @@ static void App_Response(uint32_t status)
     return;
 }
 
-/*!
+/**
  * @brief  AT task handler
  */
 static void ATTaskHandler(void const *p_arg)
@@ -163,8 +160,8 @@ static void ATTaskHandler(void const *p_arg)
 
     while (1) {
         /* memory get success */
-        rev_len = DevDebug_Read(recv_buf, MEM_POOL_BLOCK_SIZE, OS_ALWAYS_DELAY);
-        if(gParam.at_mode){
+        rev_len = DevUART_Read(&gDebugUart, recv_buf, MEM_POOL_BLOCK_SIZE, OS_ALWAYS_DELAY);
+        if(gParam.mode){
             /* execute AT command */
             App_Response(AT_HandleFrame(recv_buf, rev_len));
         } else {
@@ -173,7 +170,7 @@ static void ATTaskHandler(void const *p_arg)
                 printk("\r\nOK\r\n");
             } else {
                 /**
-                 * tx_callback_t function can be use to measure VCC
+                 * tx_callback_t function can be used to measure VCC
                  * example:
                  *      MacRadio_TxProcess(recv_buf, rev_len, Dev_GetVol);
                  */
@@ -181,6 +178,7 @@ static void ATTaskHandler(void const *p_arg)
             }
         }
         gEnableRadioRx = true;
+        BSP_OS_SemPost(&gDbgSem);
     }
 }
 

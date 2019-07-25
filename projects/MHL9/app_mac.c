@@ -2,7 +2,7 @@
  * @file    app_mac.c
  * @brief   the MAC task
  *
- * @version 0.0.1
+ * @version 1.0.0
  *******************************************************************************
  * @license Refer License or other description Docs
  * @author  Felix
@@ -51,7 +51,6 @@ static void RadioPrintRecv(bool format)
             UserDebugWrite(gMacParam.frame + gMacParam.dataIdx, gMacParam.dataLen);
         }
     }
-
 }
 
 /*!
@@ -62,15 +61,16 @@ static void MacTaskHandler(void const *p_arg)
     uint32_t status = AT_STATUS_NONE;
 
     while (1) {
-        if(gDevFlash.config.lcp > 0 && gEnableRadioRx &&
-           gDevFlash.config.baudrate <= UART_BRATE_9600){
-            /* if you need milliseconds level sleep */
-            /* PlatformSleepMs(1000 * gDevFlash.config.lcp); */
-            PlatformSleep(gDevFlash.config.lcp);
+        if(gDevFlash.config.lcp > 0 && gEnableRadioRx && gDevFlash.config.prop.bdrate <= UART_BRATE_9600){
+            if(MacRadio_CanRx()){
+                /* if you need milliseconds level sleep */
+                /* PlatformSleepMs(1000 * gDevFlash.config.lcp); */
+                PlatformSleep(gDevFlash.config.lcp);
+            }
         }
 
         if(gEnableRadioRx){
-            if(gParam.at_mode){
+            if(gParam.mode){
                 if(RX_MODE_NONE != gDevRam.rx_mode){
                     if(gDevFlash.config.lcp > 0){
                         status = MacRadio_CadProcess(gDevRam.rx_mode);
@@ -98,6 +98,13 @@ static void MacTaskHandler(void const *p_arg)
                 }
             }
             status = AT_STATUS_NONE;
+        } else {
+            BSP_OS_SemReset(&gDbgSem);
+            if(gDevFlash.config.lcp > 0){
+                if(!BSP_OS_SemWait(&gDbgSem, gDevFlash.config.lcp*1000)){
+                    gEnableRadioRx = true;
+                }
+            }
         }
         osDelayMs(1);
     }

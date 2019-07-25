@@ -2,7 +2,7 @@
  * @file    at_api.h
  * @brief   The common API
  *
- * @version 0.0.1
+ * @version 1.0.0
  *******************************************************************************
  * @license Refer License or other description Docs
  * @author  Felix
@@ -20,7 +20,7 @@ Include Files
 /** @name AT command version */
 /*@{*/
 /** @brief AT command version */
-#define AT_VER                          4
+#define AT_VER                          5
 /*@}*/
 
 /** @brief AT command minimal length */
