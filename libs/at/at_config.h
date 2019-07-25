@@ -2,9 +2,9 @@
  * @file at_config.h
  * @brief The platform device flash configuration API
  *
- * @version 0.0.1
+ * @version 1.0.0
  *******************************************************************************
- * @license refer License or other description Docs
+ * @license Refer License or other description Docs
  * @author  Felix
  ******************************************************************************/
 #ifndef AT_CONFIG_H
@@ -45,9 +45,6 @@ Definitions
 
 /*@}*/
 
-/** @brief Device EUI length */
-#define DEV_EUI_LEN             8U
-
 /** @brief Device address */
 typedef uint32_t devaddr_t;
 
@@ -62,11 +59,30 @@ struct g_at_param_t {
  */
 typedef struct
 {
-    uint32_t    bw     : 4;  /**> [0]:7.8kHz, [9]:500kHz             */
-    uint32_t    cr     : 3;  /**> [1]:CR_4_5 ... [4]:CR_4_8          */
-    uint32_t    crc    : 1;  /**> [0 CRC OFF, 1 CRC ON]              */
-    uint32_t    fixlen : 11; /**> [0: variable; other: fixed length] */
+    uint32_t    bw      : 4;  /**> [0]:7.8kHz, [9]:500kHz               */
+    uint32_t    cr      : 3;  /**> [1]:CR_4_5 ... [4]:CR_4_8            */
+    uint32_t    crc     : 1;  /**> [0 CRC OFF, 1 CRC ON]                */
+    uint32_t    fixlen  : 11; /**> [0: variable; other: fixed length]   */
+    uint32_t    modem   : 1;  /**> [0 FSK, 1 LORA ]                     */
+    uint32_t    tiq     : 1;  /**> [0 OFF, 1 ON]                        */
+    uint32_t    riq     : 1;  /**> [0 OFF, 1 ON]                        */
+    uint8_t     lowRate : 2;  /**> 0 AUTO, 1 ON, 2 OFF */
 } rps_t;
+
+/**
+ * @struct prop_t
+ * @brief protocol parameter set
+ */
+typedef struct
+{
+    uint32_t    ipMode  : 4;  /**> IP(Addr) mode: 0 no present */
+    uint32_t    seqMode : 1;  /**> [0 OFF, 1 ON] */
+    uint8_t     netmode : 3;  /**> LPWA network protocol mode */
+    uint8_t     bdrate  : 4;  /**> UART baudrate type */
+    uint8_t     pari    : 2;  /**> 0 None, 1 Even, 2 Odd */
+    uint32_t    adr     : 1;  /**> [0 OFF, 1 ON] */
+    uint32_t    ack     : 1;  /**> [0 OFF, 1 ON] */
+} prop_t;
 
 /**
  * @struct device_flash_t
@@ -81,33 +97,24 @@ struct device_flash_t {
     uint32_t    freqb;                    /**> radio B */
     uint32_t    step;                     /**> frequency increase step */
     devaddr_t   addr;                     /**> unicast address */
-    uint8_t     appKey[CFG_16BYTE_LEN];
     devaddr_t   maddr;                    /**> multicast address */
+    prop_t      prop;
+    uint8_t     appKey[CFG_16BYTE_LEN];
     uint32_t    lat;                      /**> latitude */
     uint32_t    lgt;                      /**> longitude */
     uint16_t    tprem;
     uint16_t    rprem;
     uint16_t    lcp;                      /**> unit second */
     uint16_t    lftime;                   /**> unit second */
-    uint8_t     modem;                    /**> radio modem */
-    uint8_t     tiq;
-    uint8_t     riq;
     int8_t      txpow;
     int8_t      txChan;                   /**> TX channel number */
-    uint8_t     adr;
-    uint8_t     netmode;                  /**> LPWA network protocol mode */
-    uint8_t     ipMode;                   /**> IP(Addr) mode: 0 no present, 1 present */
-    uint8_t     seqMode;                  /**> seq mode: 0 no present, 1 present */
-    uint8_t     baudrate;                 /**> AT command UART baudrate */
-    uint8_t     ack;
     uint8_t     txsf;
     uint8_t     rxsf;
-    uint8_t     lowRate;                  /**> low datarate optimize */
-    uint8_t     pari;                     /**> UART odd or even */
     uint8_t     dtype;                    /**> data output format type */
     uint8_t     rxw;                      /**>  RX window time */
     uint8_t     tfix;
     uint8_t     rfix;
+    uint8_t     fnb;
     uint8_t     param[CFG_16BYTE_LEN];    /**> user parameters */
 
     uint8_t     flash_ver;                /**> flash structure version */
@@ -127,7 +134,7 @@ typedef union
 Glocal variables
 ****/
 extern DeviceFlash_t  gDevFlash;
-extern uint8_t gDevEUI[DEV_EUI_LEN];
+extern uint8_t gDevEUI[];
 extern struct g_at_param_t gDevRam;
 
 /****

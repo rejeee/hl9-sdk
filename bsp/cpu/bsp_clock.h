@@ -2,7 +2,7 @@
  * @file    bsp_clock.h
  * @brief   the device clock API
  *
- * @version 0.0.1
+ * @version 1.0.0
  *******************************************************************************
  * @license Refer License or other description Docs
  * @author  Felix
@@ -13,9 +13,8 @@
 /****
 Include Files
 ****/
-#include "flash.h"
-#include "sysctrl.h"
 #include <stdbool.h>
+#include <stdint.h>
 
 /**
  * @brief default unuse external high frequency

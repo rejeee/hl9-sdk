@@ -2,7 +2,7 @@
  * @file    at.h
  * @brief   The common AT API
  *
- * @version 0.0.1
+ * @version 1.0.0
  *******************************************************************************
  * @license Refer License or other description Docs
  * @author  Felix

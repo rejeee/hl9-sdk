@@ -3,19 +3,11 @@
  * @brief   A implementation of FIFO buffer
  * Description: Buffer data is an array from external input
  *
- * @version 0.0.1
+ * @version 1.0.0
  *******************************************************************************
- * @license refer License or other description Docs
+ * @license Refer License or other description Docs
  * @author  Felix
  ******************************************************************************/
-
-/*******************************************************************************
-History: revision  date  author
-
-v0.0.1
-  1. The first revision.
-
-*******************************************************************************/
 #ifndef UTILS_RINGFIFO_H
 #define UTILS_RINGFIFO_H
 
@@ -24,7 +16,7 @@ v0.0.1
 #if defined(__cplusplus)
 extern "C" {
 #endif /* __cplusplus */
-    
+
 /**
  * the ring fifo structure
  */

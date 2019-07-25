@@ -2,7 +2,7 @@
  * @file    hl9.h
  * @brief   The main function of special device platform
  *
- * @version 0.0.1
+ * @version 1.0.0
  *******************************************************************************
  * @license Refer License or other description Docs
  * @author  Felix
@@ -30,8 +30,8 @@ struct global_param_t {
     BSP_OS_THREAD   macid;
     BSP_OS_MUTEX    mutex;
     union_cause_t   rst;
-    uint8_t         at_mode;        /* AT command or transparent */
-    uint8_t         at_switch;      /* AT switch */
+    uint8_t         mode;        /* AT command or transparent */
+    uint8_t         aswitch;     /* AT switch */
 };
 
 /****

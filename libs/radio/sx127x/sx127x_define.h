@@ -2,7 +2,7 @@
  * @file    sx127x_define.h
  * @brief   The definitions of SX127x radio module
  *
- * @version 0.0.2
+ * @version 1.0.0
  *******************************************************************************
  * @license Refer License or other description Docs
  * @author  Felix

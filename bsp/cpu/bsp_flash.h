@@ -2,7 +2,7 @@
  * @file    bsp_flash.h
  * @brief   the device flash driver
  *
- * @version 0.0.1
+ * @version 1.0.0
  *******************************************************************************
  * @license Refer License or other description Docs
  * @author  Felix
@@ -10,20 +10,15 @@
 #ifndef BSP_CPU_FLASH_H
 #define BSP_CPU_FLASH_H
 
-/****
-Include Files
-****/
+#if defined(__cplusplus)
+extern "C" {
+#endif /* __cplusplus */
+
 #include <stdbool.h>
-#include "flash.h"
+#include "em_device.h"
 
-typedef volatile unsigned long vuint32_t;
-
-#define REG_READ32(address)     ((uint32_t)(*(vuint32_t*)(address)))
-
-/**
- * @brief base address of flash
- */
-#define FLASH_BASE              0x00000000
+#define REG_READ32(address)     ((uint32_t)(*(vu32*)(address)))
+#define REG_READ16(address)     ((uint16_t)(*(vu16*)(address)))
 
 /**
  * @brief Flash Initialize
@@ -40,7 +35,7 @@ bool BSP_CheckFlag(void);
  */
 uint32_t BSP_FlashSectorSize(void);
 
-/*!
+/**
  * @brief Read length data from addr
  *
  * @param addr      The start address of the desired flash memory to be read.
@@ -52,7 +47,7 @@ uint32_t BSP_FlashSectorSize(void);
  */
 bool BSP_FlashRead(uint32_t addr, uint32_t *data, uint32_t len);
 
-/*!
+/**
  * @brief Write length data to addr
  *
  * @param addr      The start address of the desired flash memory to be writed.
@@ -63,5 +58,10 @@ bool BSP_FlashRead(uint32_t addr, uint32_t *data, uint32_t len);
  * @return          true if write success else false.
  */
 bool BSP_FlashWrite(uint32_t addr, uint32_t *data, uint32_t len);
+
+
+#if defined(__cplusplus)
+}
+#endif /* __cplusplus */
 
 #endif

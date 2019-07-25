@@ -249,7 +249,9 @@ void os_error (uint32_t err_code) {
   /* 'err_code' holds the runtime error code (defined in RTL.H).         */
 
   /* HERE: include optional code to be executed on runtime error. */
-  for (;;);
+  for (;;){
+      NVIC_SystemReset();
+  }
 }
 
 

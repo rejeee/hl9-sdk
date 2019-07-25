@@ -1,7 +1,11 @@
 /*******************************************************************************
  * @file mac_rdio.h
  * @brief Radio API by MAC invoke
- * @version 0.0.1
+ *
+ * @version 1.0.0
+ *******************************************************************************
+ * @license Refer License or other description Docs
+ * @author  Felix
  ******************************************************************************/
 #ifndef MAC_RADIO_H
 #define MAC_RADIO_H
@@ -18,7 +22,6 @@ Define
 ****/
 #define DEFAULT_RADIO_TIMEOUT_MS    1000U
 #define MAC_DATA_MAX_LEN            228
-#define FREQ_NEXT_COUNT             8U
 
 /**
  *                     scan  RFO  customized
@@ -46,6 +49,13 @@ Global Functions
 ****/
 
 bool MacRadio_Init(bool rfo);
+
+/**
+ *@brief Check the radio transmitter is running.
+ *
+ *@return true if not sending else false.
+ */
+bool MacRadio_CanRx(void);
 
 /**
  *@brief Wait radio to be idle, if radio is continue mode,

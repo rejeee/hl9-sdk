@@ -113,7 +113,7 @@ void HardFault_Handler(void)
 
     while( 0 == a)
     {
-        ;
+        NVIC_SystemReset();
     }
 }
 

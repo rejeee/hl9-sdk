@@ -2,9 +2,9 @@
  * @file    util.h
  * @brief   Utils function implementation
  *
- * @version 0.0.1
+ * @version 1.0.0
  *******************************************************************************
- * @license refer License or other description Docs
+ * @license Refer License or other description Docs
  * @author  Felix
  ******************************************************************************/
 #ifndef UTILS_UTIL_H
@@ -18,6 +18,8 @@
 #if defined(__cplusplus)
 extern "C" {
 #endif /* __cplusplus */
+
+#define IS_DIGIT(x)   ((0x2F < (x)) && ((x) < 0x3A))
 
 /**
  * @brief Set the random seed
