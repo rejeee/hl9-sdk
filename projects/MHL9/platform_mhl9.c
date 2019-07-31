@@ -19,7 +19,7 @@ osSemaphoreDef(debugSemaphore);
 /****
 Local Variables
 ****/
-static uint8_t sDebugBuffer[DBG_UART_SIZE] = {0};
+static uint8_t sDebugBuffer[DBG_UART_SIZE + 1] = {0};
 static Ringfifo sDebugFIFO = {0};
 struct sp_uart_t gDebugUart = {
     .rx_sem = {0},

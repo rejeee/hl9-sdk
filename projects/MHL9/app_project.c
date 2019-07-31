@@ -15,9 +15,13 @@
 
 #define TASK_PERIOD_MS      100U    /* unit ms */
 
-volatile bool   gEnableRadioRx  = true;
+/****
+Global Variables
+****/
 
+/* Code Version */
 char *gCodeVers = "1018";
+volatile bool   gEnableRadioRx  = true;
 
 /****
 Local Variables
@@ -74,8 +78,8 @@ bool AppTaskCreate(void)
 {
     bool success = false;
 
-    /* watchdog timeout 6.5s refer MCU datasheet */
-    if(RJ_ERR_OK != PlatformInit(0x0C)){
+    /* watchdog timeout 6s refer MCU datasheet */
+    if(RJ_ERR_OK != PlatformInit(6)){
         return false;
     }
 

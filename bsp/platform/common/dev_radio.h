@@ -17,9 +17,6 @@
 extern "C" {
 #endif
 
-/* Init Radio RST GPIO */
-void DevRadioGPIORST(void);
-
 /**
  * @param   enable      true is enable , false is disable
  *

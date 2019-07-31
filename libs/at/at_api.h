@@ -23,6 +23,9 @@ Include Files
 #define AT_VER                          5
 /*@}*/
 
+/** @brief AT OK response */
+#define AT_STR_OK                       "\r\nOK\r\n"
+
 /** @brief AT command minimal length */
 #define AT_CMD_MIN_LEN                  4U
 
