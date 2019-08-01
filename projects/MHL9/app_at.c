@@ -165,7 +165,7 @@ static void ATTaskHandler(void const *p_arg)
             /* execute AT command */
             App_Response(AT_HandleFrame(recv_buf, rev_len));
         } else {
-            if ((NULL != recv_buf) && (3 == rev_len) && (0 == strncmp("+++", (char *)recv_buf, 3))) {
+            if ((3 == rev_len) && (0 == strncmp("+++", (char *)recv_buf, 3))) {
                 UserEnterAT(true);
                 printk("\r\nOK\r\n");
             } else {

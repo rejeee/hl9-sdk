@@ -12,6 +12,9 @@
 
 #include "platform/platform.h"
 
+/**
+ * @brief Initialize and Create AT task with DEBUG UART
+ */
 bool AppATTask(void);
 
 #endif

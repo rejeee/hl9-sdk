@@ -318,7 +318,6 @@
           <state>$PROJ_DIR$\..\..\..\kernel\CMSIS\Include</state>
           <state>$PROJ_DIR$\..\..\..\kernel\CMSIS\RTOS\RTX\INC</state>
           <state>$PROJ_DIR$\..\..\..\bsp</state>
-          <state>$PROJ_DIR$\..\..\..\bsp\cpu</state>
           <state>$PROJ_DIR$\..\..\..\bsp\cpu\HDSC</state>
           <state>$PROJ_DIR$\..\..\..\bsp\cpu\HDSC\HC32L13X</state>
           <state>$PROJ_DIR$\..\..\..\bsp\cpu\HDSC\HC32L13X\driver\inc</state>
