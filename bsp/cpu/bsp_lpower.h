@@ -15,6 +15,7 @@ Include Files
 ****/
 #include <stdbool.h>
 #include <stdint.h>
+#include "em_device.h"
 
 /**
  * @brief Chip lowpower mode initialization
@@ -48,6 +49,7 @@ bool BSP_LPowerSleep(const uint32_t secs);
 bool BSP_LPowerSleepMs(const uint32_t ms);
 
 void BSP_LPowerStop(void);
+void BSP_LPowerIdle(void);
 
 /**
  * @brief Get seconds which MCU has been running or MCU elpased time

@@ -20,7 +20,7 @@ Include Files
 /** @name AT command version */
 /*@{*/
 /** @brief AT command version */
-#define AT_VER                          5
+#define AT_VER                          6
 /*@}*/
 
 /** @brief AT OK response */
@@ -148,13 +148,29 @@ void AT_Printf(const char *str);
 /**
  * @brief  the AT+TX command callback
  *
- * @param   forward    whether to forward this command.
+ * @param   opts        0    AT+TX,
+ *                      1   AT+CMD,
+ *                      2   AT+PARAM
+ *
  * @param   buf        the pointer of AT command string
  * @param   len        the length of AT command string
  *
  * return @see AT_STATUS
  */
-uint32_t AT_TxProcess(bool forward, uint8_t *buf, uint32_t len);
+uint32_t AT_TxProcess(uint8_t opts, uint8_t *buf, uint32_t len);
+
+/**
+ * @brief  the AT+TX command callback
+ *
+ * @param   freq        0       user flash configuration
+ *                      other   user indicate frequency
+ *
+ * @param   buf        the pointer of AT command string
+ * @param   len        the length of AT command string
+ *
+ * return @see AT_STATUS
+ */
+uint32_t AT_TxFreq(uint32_t freq, uint8_t *buf, uint32_t len);
 
 /**
  * @brief  save customer configuration

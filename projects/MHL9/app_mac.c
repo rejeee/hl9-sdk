@@ -10,7 +10,6 @@
 #include "app_mac.h"
 #include "at/at_config.h"
 #include "mac/node/mac_radio.h"
-#include "mac/node/mac_api.h"
 
 /****
 Global Variables
@@ -25,6 +24,8 @@ static void MacTaskHandler(void const *p_arg);
 osThreadDef(MacTaskHandler, osPriorityNormal, 1, 0);
 #define APP_MAC_NAME   osThread(MacTaskHandler)
 
+static struct mac_lorawan_t sMacParam = {0};
+
 /****
 Local Functions
 ****/
@@ -34,35 +35,36 @@ static void RadioPrintRecv(bool format)
 {
     uint8_t i = 0;
 
-    if(gMacParam.ack){
-        gMacParam.ack = false;
+    if(sMacParam.ack){
+        sMacParam.ack = false;
         printk("\r\nOK\r\n");
-    } else if(gMacParam.dataLen > 0){
+    } else if(sMacParam.rxLen > 0){
         if(format){
             printk("\r\n+DATA:%d,%u,%d,%d,%u\r\n\r\n",
-                   gMacParam.qos.freqerr, gDevFlash.config.rxfreq,
-                   gMacParam.qos.snr, gMacParam.qos.rssi,
-                   gMacParam.dataLen);
-            for(i = gMacParam.dataIdx; i < gMacParam.dataLen + gMacParam.dataIdx; i++){
-                printk("%02X", gMacParam.frame[i]);
+                   sMacParam.qos.freqerr, gDevFlash.config.rxfreq,
+                   sMacParam.qos.snr, sMacParam.qos.rssi,
+                   sMacParam.rxLen);
+            for(i = sMacParam.rxIdx; i < sMacParam.rxLen + sMacParam.rxIdx; i++){
+                printk("%02X", sMacParam.payload[i]);
             }
             printk("\r\n");
         } else {
-            UserDebugWrite(gMacParam.frame + gMacParam.dataIdx, gMacParam.dataLen);
+            UserDebugWrite(sMacParam.payload + sMacParam.rxIdx, sMacParam.rxLen);
         }
     }
 }
 
-/*!
+/**
  * @brief  MAC task handler
  */
 static void MacTaskHandler(void const *p_arg)
 {
     uint32_t status = AT_STATUS_NONE;
+    uint8_t spiIdx = BSP_SPI0;
 
     while (1) {
         if(gDevFlash.config.lcp > 0 && gEnableRadioRx && gDevFlash.config.prop.bdrate <= UART_BRATE_9600){
-            if(MacRadio_CanRx()){
+            if(RadioGetCanRx(spiIdx)){
                 /* if you need milliseconds level sleep */
                 /* PlatformSleepMs(1000 * gDevFlash.config.lcp); */
                 PlatformSleep(gDevFlash.config.lcp);
@@ -73,16 +75,16 @@ static void MacTaskHandler(void const *p_arg)
             if(gParam.mode){
                 if(RX_MODE_NONE != gDevRam.rx_mode){
                     if(gDevFlash.config.lcp > 0){
-                        status = MacRadio_CadProcess(gDevRam.rx_mode);
+                        status = MacRadio_CadProcess(spiIdx, true);
                     } else {
-                        status = MacRadio_RxProcess(gDevRam.rx_mode);
+                        status = MacRadio_RxProcess(spiIdx, false);
                     }
                 }
             } else {
                 if(gDevFlash.config.lcp > 0){
-                    status = MacRadio_CadProcess(RX_MODE_NONE);
+                    status = MacRadio_CadProcess(spiIdx, true);
                 } else {
-                    status = MacRadio_RxProcess(RX_MODE_NONE);
+                    status = MacRadio_RxProcess(spiIdx, false);
                 }
             }
 
@@ -94,17 +96,10 @@ static void MacTaskHandler(void const *p_arg)
             } else if(status == AT_STATUS_RX_ERR) {
                 if(RX_MODE_FACTORY == gDevRam.rx_mode){
                     printk("CRC ERR,SNR:%d, RSSI:%ddBm,Calc:%d\r\n",
-                           gMacParam.qos.snr, gMacParam.qos.rssi, gMacParam.qos.freqerr);
+                           sMacParam.qos.snr, sMacParam.qos.rssi, sMacParam.qos.freqerr);
                 }
             }
             status = AT_STATUS_NONE;
-        } else {
-            BSP_OS_SemReset(&gDbgSem);
-            if(gDevFlash.config.lcp > 0){
-                if(!BSP_OS_SemWait(&gDbgSem, gDevFlash.config.lcp*1000)){
-                    gEnableRadioRx = true;
-                }
-            }
         }
         osDelayMs(1);
     }
@@ -114,21 +109,73 @@ static void MacTaskHandler(void const *p_arg)
 Global Functions
 ****/
 
-/*!
+/**
  * @brief  Create the MAC task
  */
 bool AppMacTask(void)
 {
-    bool result = Mac_Init(gDevFlash.config.dtype & DTYPE_BITS_RFO);
+    bool success = false;
 
-    if(result){
-        result = BSP_OS_TaskCreate(&gParam.macid, APP_MAC_NAME, NULL);
-        if (true != result) {
-            LOG_ERR(("NetTask start error.\r\n"));
-        }
-    } else {
-        LOG_ERR(("Mac init error.\r\n"));
+    memset(&sMacParam, 0 ,sizeof(struct mac_lorawan_t));
+
+    if (false == MacRadio_Init()) {
+        LOG_ERR(("Radio Mac Init error.\r\n"));
+        return false;
     }
 
-    return result;
+    success = BSP_OS_TaskCreate(&gParam.macid, APP_MAC_NAME, NULL);
+    if(false == success){
+        LOG_ERR(("Mac task start error.\r\n"));
+    }
+
+    return success;
 }
+
+uint32_t AT_TxFreq(uint32_t freq, uint8_t *buf, uint32_t len)
+{
+    uint32_t status = 0;
+
+    sMacParam.freq = freq;
+    status = MacRadio_TxProcess(BSP_SPI0, buf, len, &sMacParam);
+
+    return status;
+}
+
+
+RadioIrqType_t RadioRxFinish(uint8_t spiIdx)
+{
+    struct sx127x_rx_t rxObj;
+    RadioIrqType_t type_flag = RADIO_IRQ_UNKOWN;
+    {
+        rxObj.modem = gDevFlash.config.rps.modem;
+        rxObj.bandwidth = gDevFlash.config.rps.bw;
+        rxObj.opmode = OP_MODE_RX;
+        rxObj.freq = gDevFlash.config.rxfreq;
+        rxObj.crc = gDevFlash.config.rps.crc;
+    }
+
+    type_flag =  RadioDecode(spiIdx, &rxObj, &sMacParam);
+
+    if(RADIO_IRQ_LORA_RX != type_flag && RADIO_IRQ_FSK_RX != type_flag){
+        /* clear buffer */
+        memset(sMacParam.payload, 0, sizeof(sMacParam.payload));
+        sMacParam.size = 0;
+    }
+
+    return type_flag;
+}
+
+bool AppMacUpdateRx(bool update)
+{
+    bool success = MacRadio_AbortRx(BSP_SPI0);
+
+    return success;
+}
+
+void AppMacQueryCSQ(int16_t *rssi, int8_t *snr)
+{
+    *rssi = sMacParam.qos.rssi;
+    *snr = sMacParam.qos.snr;
+    return;
+}
+

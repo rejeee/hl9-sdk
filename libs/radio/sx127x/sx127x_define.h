@@ -14,6 +14,7 @@
 Include Files
 ****/
 #include <stdint.h>
+#include "hal_def.h"
 
 /****
 Macro definiens

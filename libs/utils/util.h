@@ -111,6 +111,18 @@ void bin2str(uint8_t *bin, uint32_t len, char *str);
  */
 bool binIsTag(uint8_t tag, uint8_t *buf, uint32_t len);
 
+/**
+ * @brief Calculate voltage level according @klevel use input parameters.
+ *
+ * @param klevel    the const LEVEL to be divided
+ * @param min       the minimal reference voltage, unit mV
+ * @param max       the maximal reference voltage, unit mV
+ * @param vol       the value of current voltage, unit mV
+ *
+ * @return a level according this functions.
+ */
+uint8_t calc_level(const uint8_t klevel, const uint32_t min, const uint32_t max, const uint32_t vol);
+
 #if defined(__cplusplus)
 }
 #endif /* __cplusplus */

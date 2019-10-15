@@ -32,7 +32,7 @@ Global Functions
 ****/
 void DevCfg_InitParam(void);
 void DevCfg_Recovery(void);
-void DevCfg_Display(void);
+void DevCfg_Display(uint8_t uartIdx);
 
 /* User special parameters using param fields in @struct device_flash_t */
 void DevCfg_UserDefault(void);

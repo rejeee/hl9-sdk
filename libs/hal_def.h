@@ -28,6 +28,10 @@ Macro Defines
 Type Defines
 ****/
 
+/** @brief the callback for user-specific function. */
+typedef void (*func_ptr)(void);
+typedef void (* lpwan_func_t)(uint32_t addr, uint16_t seq);
+
 /**
  * @brief UART baudrate type define.
  */
@@ -75,6 +79,48 @@ typedef struct gps_data_t {
     FloatUnion longitude;
     int        hdop;
 } GpsDataType;
+
+typedef struct {
+    uint32_t    time;
+    uint32_t    u32data;
+    uint32_t    u8data  : 8;
+    uint32_t    imme    : 1;    /* immediate TX */
+    uint32_t    busy    : 1;    /* 1 busy, 0 free */
+    uint32_t    forward : 1;
+    uint32_t    len     : 8;    /* MemPool payload length */
+} BSP_MP_Param;
+
+typedef struct
+{
+    uint8_t addr;       /**<    Slave Address */
+    uint8_t idx;        /**<    Slave index or Channel  */
+    uint8_t regs[4];    /**<    Slave register address */
+    uint8_t len;        /**<    the byte width of @regs, max is 4 */
+} BSP_Slave_Param;
+
+/*
+ * Radio Quality Calculator
+ */
+typedef struct
+{
+    int32_t     freqerr;
+    int16_t     rssi;       /**<  max physical RSSI range -198..+63 */
+    int8_t      snr;        /**<  max physical SNR range -32..+31.75 */
+} RadioQoS_t;
+
+struct mac_lorawan_t {
+    lpwan_func_t    cb;
+    RadioQoS_t      qos;
+    uint32_t        freq;
+    uint32_t        addr;
+    uint16_t        seqnoUp;
+    uint16_t        seqnoDn;
+    uint8_t         payload[255];   /**<  to be write or read from radio FIFO */
+    uint8_t         size;           /**<  total size to be write or read */
+    uint8_t         rxLen;          /**<  valid Rx data length */
+    uint8_t         rxIdx;          /**<  valid Rx data index */
+    bool            ack;
+};
 
 #if defined(__cplusplus)
 }

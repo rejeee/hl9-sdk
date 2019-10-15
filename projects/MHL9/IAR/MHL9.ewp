@@ -3,7 +3,7 @@
 <project>
   <fileVersion>2</fileVersion>
   <configuration>
-    <name>M-HL9</name>
+    <name>V3</name>
     <toolchain>
       <name>ARM</name>
     </toolchain>
@@ -17,15 +17,15 @@
         <debug>1</debug>
         <option>
           <name>ExePath</name>
-          <state>M-HL9\Exe</state>
+          <state>V3\Exe</state>
         </option>
         <option>
           <name>ObjPath</name>
-          <state>M-HL9\Obj</state>
+          <state>V3\Obj</state>
         </option>
         <option>
           <name>ListPath</name>
-          <state>M-HL9\List</state>
+          <state>V3\List</state>
         </option>
         <option>
           <name>GEndianMode</name>
@@ -34,20 +34,20 @@
         <option>
           <name>Input variant</name>
           <version>3</version>
-          <state>0</state>
+          <state>6</state>
         </option>
         <option>
           <name>Input description</name>
-          <state>Automatic choice of formatter.</state>
+          <state>No specifier n, no float nor long long, no scan set, no assignment suppressing.</state>
         </option>
         <option>
           <name>Output variant</name>
           <version>2</version>
-          <state>0</state>
+          <state>7</state>
         </option>
         <option>
           <name>Output description</name>
-          <state>Automatic choice of formatter.</state>
+          <state>No specifier a, A, no specifier n, no float nor long long, no flags.</state>
         </option>
         <option>
           <name>GOutputBinary</name>
@@ -93,7 +93,7 @@
         </option>
         <option>
           <name>GenLowLevelInterface</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>GEndianModeBE</name>
@@ -1008,6 +1008,9 @@
                 <name>$PROJ_DIR$\..\..\..\bsp\cpu\HDSC\HC32L13X\driver\src\gpio.c</name>
               </file>
               <file>
+                <name>$PROJ_DIR$\..\..\..\bsp\cpu\HDSC\HC32L13X\driver\src\i2c.c</name>
+              </file>
+              <file>
                 <name>$PROJ_DIR$\..\..\..\bsp\cpu\HDSC\HC32L13X\driver\src\interrupts_hc32l13x.c</name>
               </file>
               <file>
@@ -1021,6 +1024,9 @@
               </file>
               <file>
                 <name>$PROJ_DIR$\..\..\..\bsp\cpu\HDSC\HC32L13X\driver\src\reset.c</name>
+              </file>
+              <file>
+                <name>$PROJ_DIR$\..\..\..\bsp\cpu\HDSC\HC32L13X\driver\src\rtc.c</name>
               </file>
               <file>
                 <name>$PROJ_DIR$\..\..\..\bsp\cpu\HDSC\HC32L13X\driver\src\spi.c</name>

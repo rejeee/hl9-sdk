@@ -10,7 +10,6 @@
 #include "app_at.h"
 #include "at/at.h"
 #include "at/at_config.h"
-#include "mac/node/mac_api.h"
 #include "mac/node/mac_radio.h"
 
 /****
@@ -119,10 +118,10 @@ static void App_Response(uint32_t status)
             AppAtResp("\r\nOK\r\n");
             break;
         case AT_STATUS_CFG:
-            DevCfg_Display();
+            DevCfg_Display(0);
             break;
         case AT_STATUS_CSQ:
-            Mac_queryCSQ(&rssi, &snr);
+            AppMacQueryCSQ(&rssi, &snr);
             if(snr || rssi){
                 printk("\r\n+CSQ:%d,%d\r\n", snr, rssi);
             } else {
@@ -135,11 +134,11 @@ static void App_Response(uint32_t status)
             DevUART_FlushAll(&gDebugUart, 5);
             break;
         case AT_STATUS_SET_RF:
-            MacRadio_UpdateRx(true);
+            AppMacUpdateRx(true);
             AppAtResp("\r\nOK\r\n");
             break;
         case AT_STATUS_RX_MODE:
-            MacRadio_UpdateRx(true);
+            AppMacUpdateRx(true);
             AppAtResp("\r\nOK\r\n");
             break;
         case AT_STATUS_NONE:
@@ -174,11 +173,10 @@ static void ATTaskHandler(void const *p_arg)
                  * example:
                  *      MacRadio_TxProcess(recv_buf, rev_len, Dev_GetVol);
                  */
-                MacRadio_TxProcess(recv_buf, rev_len, NULL);
+                AT_TxFreq(0, recv_buf, rev_len);
             }
         }
         gEnableRadioRx = true;
-        BSP_OS_SemPost(&gDbgSem);
     }
 }
 
@@ -198,21 +196,30 @@ void AT_LOG(const uint8_t *ptr, size_t len)
 }
 
 /* return refer @AT_STATUS */
-uint32_t AT_TxProcess(bool forward, uint8_t *buf, uint32_t len)
+uint32_t AT_TxProcess(uint8_t opts, uint8_t *buf, uint32_t len)
 {
-    uint32_t status = AT_STATUS_UNUSED;
-    if(forward){
-        /* FIXME: If necessary */
-        /* MacRadio_TxProcess(recv_buf, rev_len, Dev_GetVol); */
-        status = MacRadio_TxProcess(buf, len, NULL);
-    } else {
+    uint32_t status = AT_STATUS_OK;
+
+    switch(opts){
+    case 1:
+        if(!DevCfg_UserUpdate(buf, len)){
+            status = AT_STATUS_FLASH_ERR;
+        }
+        break;
+    case 2:
         /* TODO: set customer parameters with AT+CMD =<x> */
+        status = AT_STATUS_UNUSED;
+        break;
+    case 0:
+    default:
+        status = AT_TxFreq(0, buf, len);
+        break;
     }
 
     return status;
 }
 
-/*!
+/**
  * @brief  Create the AT task
  */
 bool AppATTask(void)

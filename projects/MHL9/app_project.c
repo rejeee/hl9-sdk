@@ -20,16 +20,12 @@ Global Variables
 ****/
 
 /* Code Version */
-char *gCodeVers = "1018";
+char *gCodeVers = "1020";
 volatile bool   gEnableRadioRx  = true;
 
 /****
 Local Variables
 ****/
-osSemaphoreDef(dgbIRQSem);
-#define GLOBAL_IRQ_DBG     osSemaphore(dgbIRQSem)
-
-BSP_OS_SEM      gDbgSem = {0};
 
 /****
 Local Functions
@@ -65,13 +61,22 @@ static void AppTaskManager(void)
     BSP_OS_MutexLock(&gParam.mutex, OS_ALWAYS_DELAY);
     UserCheckAT();
     BSP_OS_MutexUnLock(&gParam.mutex);
+#if 0
+    static int count = 0;
+    stc_rtc_time_t stcTime;
+    if(count++%10 == 0){
+        BSP_RTC_GetDateTime(&stcTime);
+        printk("%d-%d-%d %d:%d:%d\r\n", stcTime.u8Year + 2000,stcTime.u8Month,stcTime.u8Day,
+            stcTime.u8Hour,stcTime.u8Minute,stcTime.u8Second);
+    }
+#endif
 }
 
 /****
 Global Functions
 ****/
 
-/*!
+/**
  * @brief  Create the App task
  */
 bool AppTaskCreate(void)
@@ -88,9 +93,7 @@ bool AppTaskCreate(void)
         return false;
     }
 
-    if (false == BSP_OS_SemCreate(&gDbgSem, 0, GLOBAL_IRQ_DBG)) {
-        return false;
-    }
+    DevUserInit();
 
     success = UserDebugInit(false, gDevFlash.config.prop.bdrate, gDevFlash.config.prop.pari);
 

@@ -54,7 +54,7 @@ extern "C" {
 
 #define osDelayMs(x)            osDelay(x)
 
-#define BSP_OS_SemPostISR       BSP_OS_SemPost
+#define BSP_OS_SemPostISR(x)    BSP_OS_SemPost(x)
 
 /*
 ********************************************************************************
@@ -86,7 +86,7 @@ bool BSP_OS_TaskCreate(osThreadId *ptr, const osThreadDef_t *def, void *argument
 /**
  * @brief Creates a sempahore to lock/unlock
  *
- * @param p_sem     Pointer to a semaphore control block
+ * @param p_sem      Pointer to a semaphore structure
  * @param count     Initial value of the semaphore
  * @param def       Pointer to a semaphore definition
  *
@@ -98,7 +98,7 @@ bool BSP_OS_SemCreate(BSP_OS_SEM *p_sem, int32_t count, const osSemaphoreDef_t *
 /**
  * @brief Wait on a semaphore to become available
  *
- * @param p_sem     Pointer to a semaphore control block
+ * @param p_sem     Pointer to a semaphore structure
  * @param dly_ms    delay in miliseconds to wait on the semaphore
  *
  * @return  true  if the semaphore was acquire.
@@ -109,7 +109,7 @@ bool BSP_OS_SemWait(const BSP_OS_SEM *p_sem, uint32_t dly_ms);
 /**
  * @brief Post a semaphore
  *
- * @param p_sem     Pointer to a semaphore control block
+ * @param p_sem      Pointer to a semaphore structure
  *
  * @return  true  if the semaphore was posted.
  *          false if the semaphore could not be posted.
@@ -140,7 +140,7 @@ bool BSP_OS_MutexCreate(BSP_OS_MUTEX *p_mutex, const osMutexDef_t *def);
 /**
  * @brief Wait on a mutex to become available
  *
- * @param p_mutex   Pointer to a mutex control block
+ * @param p_mutex   Pointer to a mutex structure
  * @param dly_ms    delay in miliseconds to wait on the mutex
  *
  * @return  true  if the mutex was acquire.
@@ -151,7 +151,7 @@ bool BSP_OS_MutexLock(const BSP_OS_MUTEX *p_mutex, uint32_t dly_ms);
 /**
  * @brief Post a mutex
  *
- * @param p_mutex   Pointer to a mutex control block
+ * @param p_mutex   Pointer to a mutex structure
  *
  * @return  true  if the mutex was posted.
  *          false if the mutex could not be posted.

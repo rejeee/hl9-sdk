@@ -18,44 +18,16 @@ Include
 #include "radio/sx127x/sx127x_common.h"
 
 /****
-Define
-****/
-#define DEFAULT_RADIO_TIMEOUT_MS    1000U
-#define MAC_DATA_MAX_LEN            228
-
-/**
- *                     scan  RFO  customized
- *   |   7 ~ 6(RFU)  |  5  |  4  |   3~0    |
- *
- * Note:
- *   4 bit:  0 PA Boost, 1 RFO
- *   5 bit:  0 scan by level , 1 scan by cad
- */
-#define DTYPE_BITS_RFO              0x10
-#define DTYPE_BITS_SCAN             0x20
-
-/** @brief Device LPWAN mode */
-enum {
-    NET_MODE_NONE     = 0U, /**< node to node, fix frequency */
-    NET_MODE_LOCAL,         /**< node to gateway, auto frequency */
-    NET_MODE_NUM,           /**< all mode number */
-};
-
-/** @brief the callback for user-specific function after execute radio transmit. */
-typedef void (*tx_callback_t)(void);
-
-/****
 Global Functions
 ****/
-
-bool MacRadio_Init(bool rfo);
+bool MacRadio_Init(void);
 
 /**
- *@brief Check the radio transmitter is running.
- *
- *@return true if not sending else false.
+ *@return AT_STATUS
  */
-bool MacRadio_CanRx(void);
+uint32_t MacRadio_TxProcess(uint8_t spiIdx, uint8_t *buf, uint32_t len, struct mac_lorawan_t *ptr);
+uint32_t MacRadio_RxProcess(uint8_t spiIdx, bool reconfig);
+uint32_t MacRadio_CadProcess(uint8_t spiIdx, bool reconfig);
 
 /**
  *@brief Wait radio to be idle, if radio is continue mode,
@@ -63,24 +35,19 @@ bool MacRadio_CanRx(void);
  *
  *@return true if success else false.
  */
-bool MacRadio_AbortRx(void);
+bool MacRadio_AbortRx(uint8_t spiIdx);
+
+bool RadioGetCanRx(uint8_t spiIdx);
 
 /**
- *@brief Abort Rx and update
+ * @brief Follow function need be implementation
  *
- *@param    update  whether radio configuration need update
- *
- *@return true if success else false.
+ * @FIXME: need user special implementation
  */
-bool MacRadio_UpdateRx(bool update);
+bool RadioWaitDone(uint8_t spiIdx, uint8_t semIdx, uint32_t timeout);
+RadioIrqType_t RadioRxFinish(uint8_t spiIdx);
+RadioIrqType_t RadioDecode(uint8_t spiIdx, struct sx127x_rx_t *rxObj, struct mac_lorawan_t *ptr);
 
-void MacRadio_ScanSet(const uint32_t freq, RadioSettings_t *settings);
-
-/**
- *@return AT_STATUS
- */
-uint32_t MacRadio_TxProcess(uint8_t *buf, uint32_t len, tx_callback_t cb);
-uint32_t MacRadio_RxProcess(uint8_t rxmode);
-uint32_t MacRadio_CadProcess(uint8_t rxmode);
+bool RadioSemClear(uint8_t spiIdx, uint8_t semIdx);
 
 #endif

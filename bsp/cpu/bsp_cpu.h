@@ -23,6 +23,9 @@
 #include "bsp_adc.h"
 #include "bsp_clock.h"
 #include "bsp_lpower.h"
+#include "bsp_i2c.h"
+#include "bsp_rtc.h"
+#include "bsp_pca.h"
 
 #endif
 

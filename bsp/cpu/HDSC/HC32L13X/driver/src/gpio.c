@@ -98,6 +98,7 @@
 en_result_t Gpio_Init(en_gpio_port_t enPort, en_gpio_pin_t enPin, stc_gpio_config_t  *pstcGpioCfg)
 {
     //配置为默认值,GPIO功能
+    setBit((uint32_t)&M0P_GPIO->PAADS + enPort, enPin, FALSE);
     *((uint32_t*)(((uint32_t)(&(M0P_GPIO->PA00_SEL)) + enPort) + (((uint32_t)enPin)<<2))) = GpioAf0;
     
     //方向配置

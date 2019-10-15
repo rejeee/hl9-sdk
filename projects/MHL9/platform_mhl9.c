@@ -8,7 +8,6 @@
  * @author  Felix
  ******************************************************************************/
 #include "platform/platform.h"
-#include <stdarg.h>
 #include "at/at_config.h"
 #include "radio/sx127x/sx127x_common.h"
 #include "mac/node/mac_radio.h"
@@ -25,7 +24,7 @@ struct sp_uart_t gDebugUart = {
     .rx_sem = {0},
     .rx_fifo = &sDebugFIFO,
     .timeout = DBG_UART_TIMEOUT,
-    .num = DBG_UART_NUM
+    .idx = DBG_UART_IDX
 };
 
 static void DevUpdateAT(void)
@@ -59,7 +58,9 @@ Global Functions
  */
 void Gpio_IRQHandler(uint8_t u8Param)
 {
-    DevRadioIRQHandler(u8Param);
+    if(0 == u8Param) {
+        DevRadioIRQHandler(u8Param);
+    }
 
     /* User Key IRQ */
     if(1 == u8Param) {
@@ -81,8 +82,8 @@ void RadioDelay(uint32_t ms)
 }
 
 /* Ant control is empty implemetation to be compatible different designs */
-void RadioAntLowPower(uint8_t param){ }
-void RadioAntSwitch(uint8_t param) { }
+void RadioAntLowPower(uint8_t spiIdx, uint8_t status){ }
+void RadioAntSwitch(uint8_t spiIdx, uint8_t rxTx) { }
 
 /**
  * @brief user project special implemetation
@@ -96,7 +97,6 @@ void UserExternalGPIO(bool enable)
     gpioCfg.enDir = GpioDirIn;
     gpioCfg.enPuPd = GpioPd;
     gpioCfg.enOD = GpioOdDisable;
-    gpioCfg.enDrv = GpioDrvL;
     if(enable) {
         Sysctrl_SetPeripheralGate(SysctrlPeripheralGpio, TRUE);
         Gpio_Init(AT_GPIO, AT_PIN, &gpioCfg);
@@ -111,9 +111,7 @@ void UserExternalGPIO(bool enable)
 
         /* unused GPIO diabled */
         Gpio_Init(GpioPortA, GpioPin11, &gpioCfg);
-        Gpio_Init(GpioPortA, GpioPin12, &gpioCfg);
         Gpio_SetAfMode(GpioPortA, GpioPin11,  GpioAf0);
-        Gpio_SetAfMode(GpioPortA, GpioPin12,  GpioAf0);
 
         Gpio_Init(GpioPortB, GpioPin3, &gpioCfg);
         Gpio_Init(GpioPortB, GpioPin4, &gpioCfg);
@@ -137,14 +135,14 @@ bool UserDebugInit(bool reinit, uint32_t baudrateType, uint8_t pariType)
         .rx_pin = DBG_RX_PIN,
         .af = DBG_AF,
         .pd = GpioPu,
-        .num = DBG_UART_NUM,
+        .idx = DBG_UART_IDX,
         .bdtype = baudrateType,
         .pri = pariType
     };
 
     /* Note: you can set timeout you need */
     gDebugUart.timeout = BSP_UartSplitTime(baudrateType);
-    gDebugUart.num = uart.num;
+    gDebugUart.idx = uart.idx;
 
     if(false == reinit){
         /* first init */
@@ -157,13 +155,14 @@ bool UserDebugInit(bool reinit, uint32_t baudrateType, uint8_t pariType)
     } else {
         success = DevUART_ReInit(&uart);
     }
+    BSP_DbgInit(uart.idx, UserDebugWrite);
 
     return success;
 }
 
 void UserDebugWrite(const uint8_t *data, uint32_t len)
 {
-    BSP_UartSend(DBG_UART_NUM, data, len);
+    BSP_UartSend(DBG_UART_IDX, data, len);
 }
 
 void UserEnterAT(bool enable)
@@ -181,7 +180,7 @@ void UserEnterAT(bool enable)
     BSP_OS_MutexUnLock(&gParam.mutex);
     /* exit transparent */
     if(enable){
-        MacRadio_UpdateRx(true);
+        AppMacUpdateRx(true);
     }
 }
 
@@ -195,7 +194,7 @@ void UserCheckAT(void)
         }
 
         if(1 == gParam.mode){
-            MacRadio_UpdateRx(true);
+            AppMacUpdateRx(true);
         }
     }
 
@@ -207,7 +206,7 @@ void UserCheckAT(void)
  *  User should redefine config display function to reduce code size
  *  This function is called only by AT task.
  */
-void DevCfg_Display(void)
+void DevCfg_Display(uint8_t uartIdx)
 {
     rps_t rps = gDevFlash.config.rps;
     uint32_t freq  = gDevFlash.config.txfreq;
@@ -332,43 +331,59 @@ void DevCfg_UserDefault(void)
     gDevFlash.config.dtype = 0;
 }
 
-void Dev_GetVol(void)
+bool DevCfg_UserUpdate(uint8_t *data, uint32_t len)
 {
-    /**
-     * NOTE:  you can wait a moment for measure VCC after execute TX, but you
-     *        should not be too long and must be less than TX Air Time.
-     *
-     * for example: Delay for a short time for radio TX work,
-     *              you can measure voltage at maximum power consumption
-     *        osDelayMs(5);
-     */
+    bool success = false;
 
-    /* voltage value */
-    BSP_ADC_Enable();
-    gParam.dev.vol = (3 * BSP_ADC_Sample(AdcAVccDiV3Input));
-    BSP_ADC_Disable();
-}
-
-/**
- *  NOTE:
- *  User should redefine print function to reduce code size
- *  by disable IAR print Automatic choice of formatter.
- */
-int printk(const char *fmt_s, ...)
-{
-    static char outbuf[128] = {0};
-
-    va_list ap;
-    int result;
-    uint32_t len = sizeof(outbuf);
-
-    va_start(ap, fmt_s);
-    result = vsnprintf(outbuf, len, fmt_s, ap);
-    va_end(ap);
-
-    if(result > 0){
-        BSP_UartSend(DBG_UART_NUM, (uint8_t *)outbuf, result);
+    if(0 != memcmp(gDevFlash.config.param, data, len)){
+        memcpy(gDevFlash.config.param, data, len);
     }
 
-    return result;
+    success = Flash_WriteParam(gDevFlash.values, gDevFlashSize);
+
+    return success;
 }
+
+void DevUserInit(void)
+{
+    BSP_RTC_TypeDef rtcCfg;
+    stc_rtc_time_t stcTime;
+
+    rtcCfg.callback = NULL;
+    rtcCfg.dateTime = NULL;
+    rtcCfg.extl = gParam.dev.extl;
+    if(gParam.rst.bits.u8Por1_5V || gParam.rst.bits.u8Por5V){
+        DDL_ZERO_STRUCT(stcTime);
+        /* Init RTC timer */
+        stcTime.u8Year = 0x19;
+        stcTime.u8Month = 0x01;
+        stcTime.u8Day = 0x01;
+        stcTime.u8Hour = 0x00;
+        stcTime.u8Minute = 0x00;
+        stcTime.u8Second = 0x01;
+        stcTime.u8DayOfWeek = Rtc_CalWeek(&stcTime.u8Day);
+        rtcCfg.dateTime = &stcTime;
+    }
+    BSP_RTC_Init(&rtcCfg);
+}
+
+void Dev_GetVol(void)
+{
+    BSP_ADC_TypeDef adcCfg;
+    uint32_t adc = 0;
+
+    /* Internal 2.5V voltage reference */
+    adcCfg.ref = RefVolSelInBgr2p5;
+
+    BSP_ADC_Enable(&adcCfg);
+    adc = BSP_ADC_Sample(0, AdcAVccDiV3Input);
+    gParam.dev.vol = (adc*2500*3)/4096;
+
+    /** example */
+    /*
+    adc = BSP_ADC_Sample(0, AdcExInputCH2);
+    adc = (adc*2500)/4096;
+    */
+    BSP_ADC_Disable(NULL);
+}
+

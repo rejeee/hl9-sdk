@@ -11,6 +11,7 @@
 #define  BSP_H
 
 #include "app_cfg.h"
+#include "bsp_dbg_printf.h"
 #include "bsp_RTX.h"
 #include "cpu/bsp_cpu.h"
 #include "utils/util.h"
@@ -26,6 +27,8 @@ extern "C" {
 #define APP_FeedDog()               BSP_WatchdogFeed()
 #endif
 
+typedef void (*iap_func)(void);
+
 /**
  * @brief the pointer of uart rx operation
  */
@@ -34,7 +37,7 @@ struct sp_uart_t
     BSP_OS_SEM      rx_sem;     /**< BSP_OS_SEM should be a pointer type */
     Ringfifo*       rx_fifo;    /**< UART Rx FIFO */
     uint32_t        timeout;    /**< The min timeslice of between two frames */
-    BSP_UART_NUM    num;
+    BSP_UART_IDX    idx;
 };
 
 /****
@@ -60,11 +63,6 @@ uint32_t BSP_OS_Rand(uint32_t max);
  * @brief Get UART byte data split timeout, min is 5ms
  */
 uint32_t BSP_UartSplitTime(uint32_t baudrateType);
-
-/** @name customer printf ouput function */
-/*@{*/
-int printk(const char *fmt_s, ...);
-/*@}*/
 
 #if defined(__cplusplus)
 }

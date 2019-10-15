@@ -49,11 +49,9 @@ bool DevUART_ReInit(const BSP_UART_TypeDef* ptr);
  *
  * @return  the size of data which read
  */
-uint32_t DevUART_Read(const struct sp_uart_t *sp, uint8_t *data, uint32_t max_size,
-                      uint32_t timeout);
+uint32_t DevUART_Read(struct sp_uart_t *sp, uint8_t *data, uint32_t max_size, uint32_t timeout);
 
-uint32_t DevUART_WriteAndRead(const struct sp_uart_t *sp, uint8_t *wdata, size_t wlen,
-                              uint8_t *rdata, uint32_t timeout);
+uint32_t DevUART_WriteAndRead(struct sp_uart_t *sp, uint8_t *wdata, size_t wlen, uint8_t *rdata, uint32_t timeout);
 
 /**
  * @brief Put a byte into a fifo from UART RX_DATA.
@@ -67,9 +65,9 @@ uint32_t DevUART_WriteAndRead(const struct sp_uart_t *sp, uint8_t *wdata, size_t
  *          1       put data into FIFO and post success
  *          2       put data into FIFO but post fail
  */
-int DevUART_IRQHandler(const struct sp_uart_t *sp, uint32_t userData);
+int DevUART_IRQHandler(struct sp_uart_t *sp, uint32_t userData);
 
-void DevUART_FlushAll(const struct sp_uart_t *sp, uint32_t timeout);
+void DevUART_FlushAll(struct sp_uart_t *sp, uint32_t timeout);
 
 #if defined(__cplusplus)
 }

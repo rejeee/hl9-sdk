@@ -19,6 +19,17 @@ Include Files
 Definitions
 ****/
 
+/**
+ *                     scan  RFO  customized
+ *   |   7 ~ 6(RFU)  |  5  |  4  |   3~0    |
+ *
+ * Note:
+ *   4 bit:  0 PA Boost, 1 RFO
+ *   5 bit:  0 scan by level , 1 scan by cad
+ */
+#define DTYPE_BITS_RFO          0x10
+#define DTYPE_BITS_SCAN         0x20
+
 /** @name radio defines */
 /*@{*/
 
@@ -48,6 +59,13 @@ Definitions
 /** @brief Device address */
 typedef uint32_t devaddr_t;
 
+/** @brief Device LPWAN mode */
+enum {
+    NET_MODE_NONE     = 0U, /**< node to node, fix frequency */
+    NET_MODE_LOCAL,         /**< node to gateway, auto frequency */
+    NET_MODE_NUM,           /**< all mode number */
+};
+
 struct g_at_param_t {
     uint16_t    sleep_secs;     /**< sleep seconds    */
     uint8_t     rx_mode;        /**< indicate radio rx continue */
@@ -66,7 +84,7 @@ typedef struct
     uint32_t    modem   : 1;  /**> [0 FSK, 1 LORA ]                     */
     uint32_t    tiq     : 1;  /**> [0 OFF, 1 ON]                        */
     uint32_t    riq     : 1;  /**> [0 OFF, 1 ON]                        */
-    uint8_t     lowRate : 2;  /**> 0 AUTO, 1 ON, 2 OFF */
+    uint32_t    lowRate : 2;  /**> 0 AUTO, 1 ON, 2 OFF */
 } rps_t;
 
 /**
@@ -77,9 +95,9 @@ typedef struct
 {
     uint32_t    ipMode  : 4;  /**> IP(Addr) mode: 0 no present */
     uint32_t    seqMode : 1;  /**> [0 OFF, 1 ON] */
-    uint8_t     netmode : 3;  /**> LPWA network protocol mode */
-    uint8_t     bdrate  : 4;  /**> UART baudrate type */
-    uint8_t     pari    : 2;  /**> 0 None, 1 Even, 2 Odd */
+    uint32_t    netmode : 3;  /**> LPWA network protocol mode */
+    uint32_t    bdrate  : 4;  /**> UART baudrate type */
+    uint32_t    pari    : 2;  /**> 0 None, 1 Even, 2 Odd */
     uint32_t    adr     : 1;  /**> [0 OFF, 1 ON] */
     uint32_t    ack     : 1;  /**> [0 OFF, 1 ON] */
 } prop_t;

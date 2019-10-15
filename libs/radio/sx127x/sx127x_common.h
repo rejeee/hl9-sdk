@@ -56,16 +56,6 @@ typedef enum
   RADIO_IRQ_UNKOWN
 } RadioIrqType_t;
 
-/*
- * Radio Quality Calculator
- */
-typedef struct
-{
-    int32_t     freqerr;
-    int16_t     rssi;       /* max physical RSSI range -198..+63 */
-    int8_t      snr;        /* max physical SNR range -32..+31.75 */
-} RadioQoS_t;
-
 /**
  * Radio driver supported modems
  */
@@ -104,6 +94,25 @@ typedef struct
   int8_t            power;        /* the output power [dbm] */
   uint8_t           rfo;          /* rfo */
 } RadioSettings_t;
+
+/*
+ * Radio Rx Config
+ *
+ * bandwidth  [0: 7.8  kHz, 1: 10.4 kHz, 2: 15.6 kHz, 3: 20.8 kHz,
+ *              4: 31.2 kHz, 5: 41.6 kHz, 6: 62.5 kHz, 7: 125 kHz,
+ *              8: 250  kHz, 9: 500  kHz, other: Reserved]
+ *
+ * rxmode     [false] single rx [true] continuous
+ * crc        [false] off [true] on
+ */
+struct sx127x_rx_t
+{
+    uint32_t    freq;
+    uint8_t     bandwidth;
+    uint8_t     opmode;
+    uint8_t     crc;
+    uint8_t     modem;
+};
 
 #ifdef __cplusplus
 }

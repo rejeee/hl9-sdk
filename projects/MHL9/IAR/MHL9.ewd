@@ -3,7 +3,7 @@
 <project>
   <fileVersion>2</fileVersion>
   <configuration>
-    <name>M-HL9</name>
+    <name>V3</name>
     <toolchain>
       <name>ARM</name>
     </toolchain>
