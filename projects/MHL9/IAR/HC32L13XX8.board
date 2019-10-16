@@ -2,7 +2,7 @@
 
 <flash_board>
   <pass>
-    <loader>$PROJ_DIR$\FlashHC32L13XX8.flash</loader>
+    <loader>$PROJ_DIR$\..\..\..\bsp\cpu\HDSC\HC32L13X\flashloader\FlashHC32L13XX8.flash</loader>
     <range>CODE 0x0 0xfbff</range>
   </pass>
 </flash_board>

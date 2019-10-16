@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>MHL9</TargetName>
+      <TargetName>V3</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
@@ -460,6 +460,11 @@
               <FileName>wdt.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\bsp\cpu\HDSC\HC32L13X\driver\src\wdt.c</FilePath>
+            </File>
+            <File>
+              <FileName>rtc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\bsp\cpu\HDSC\HC32L13X\driver\src\rtc.c</FilePath>
             </File>
           </Files>
         </Group>
