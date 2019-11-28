@@ -45,9 +45,13 @@ static void App_Information(void)
 
 static void App_Recovery(void)
 {
-    DevCfg_Recovery();
-    AppAtResp("\r\nOK\r\n");
-    NVIC_SystemReset();
+    if(DevCfg_Recovery(1)){
+        AppAtResp("\r\nOK\r\n");
+        NVIC_SystemReset();
+    } else {
+        AppAtResp("\r\nER05\r\n");
+    }
+
     return;
 }
 
@@ -118,7 +122,7 @@ static void App_Response(uint32_t status)
             AppAtResp("\r\nOK\r\n");
             break;
         case AT_STATUS_CFG:
-            DevCfg_Display(0);
+            DevCfg_Display(BSP_LPUART0);
             break;
         case AT_STATUS_CSQ:
             AppMacQueryCSQ(&rssi, &snr);
@@ -168,11 +172,6 @@ static void ATTaskHandler(void const *p_arg)
                 UserEnterAT(true);
                 printk("\r\nOK\r\n");
             } else {
-                /**
-                 * tx_callback_t function can be used to measure VCC
-                 * example:
-                 *      MacRadio_TxProcess(recv_buf, rev_len, Dev_GetVol);
-                 */
                 AT_TxFreq(0, recv_buf, rev_len);
             }
         }
@@ -219,9 +218,6 @@ uint32_t AT_TxProcess(uint8_t opts, uint8_t *buf, uint32_t len)
     return status;
 }
 
-/**
- * @brief  Create the AT task
- */
 bool AppATTask(void)
 {
     bool result = false;

@@ -108,13 +108,9 @@ static void MacTaskHandler(void const *p_arg)
 /****
 Global Functions
 ****/
-
-/**
- * @brief  Create the MAC task
- */
 bool AppMacTask(void)
 {
-    bool success = false;
+    bool success = true;
 
     memset(&sMacParam, 0 ,sizeof(struct mac_lorawan_t));
 
@@ -123,7 +119,7 @@ bool AppMacTask(void)
         return false;
     }
 
-    success = BSP_OS_TaskCreate(&gParam.macid, APP_MAC_NAME, NULL);
+    success = BSP_OS_TaskCreate(&gParam.appid, APP_MAC_NAME, NULL);
     if(false == success){
         LOG_ERR(("Mac task start error.\r\n"));
     }
@@ -140,7 +136,6 @@ uint32_t AT_TxFreq(uint32_t freq, uint8_t *buf, uint32_t len)
 
     return status;
 }
-
 
 RadioIrqType_t RadioRxFinish(uint8_t spiIdx)
 {

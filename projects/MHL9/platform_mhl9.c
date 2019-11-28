@@ -12,8 +12,30 @@
 #include "radio/sx127x/sx127x_common.h"
 #include "mac/node/mac_radio.h"
 
+#define APP_DEV_VER        1
+
+/****
+Global Variables
+****/
 osSemaphoreDef(debugSemaphore);
 #define DEBUG_SEM_NAME      osSemaphore(debugSemaphore)
+
+DeviceFlash_t  gDevFlash;
+struct g_at_param_t gDevRam = {
+    .sleep_secs = 0,
+    .rx_mode = RX_MODE_NONE
+};
+
+struct global_param_t gParam = {
+    .dev        = {0},
+    .mainid     = NULL,
+    .appid      = NULL,
+    .mutex      = NULL,
+    .dtime      = 0,
+    .rst        = {0},
+    .mode       = 0,
+    .aswitch    = 1
+};
 
 /****
 Local Variables
@@ -26,6 +48,8 @@ struct sp_uart_t gDebugUart = {
     .timeout = DBG_UART_TIMEOUT,
     .idx = DBG_UART_IDX
 };
+
+static BSP_ADC_TypeDef sADCConfig;
 
 static void DevUpdateAT(void)
 {
@@ -47,6 +71,36 @@ static void DebugCallback(uint32_t userData)
     if(0 == result || 1 == result){
         gEnableRadioRx = false;
     }
+}
+
+static void UserInitGPIO(void)
+{
+    stc_gpio_config_t gpioCfg;
+    DDL_ZERO_STRUCT(gpioCfg);
+
+    Sysctrl_SetPeripheralGate(SysctrlPeripheralGpio, TRUE);
+
+    gpioCfg.enDir = GpioDirIn;
+    gpioCfg.enPuPd = GpioPd;
+    Gpio_Init(AT_GPIO, AT_PIN, &gpioCfg);
+    Gpio_SetAfMode(AT_GPIO, AT_PIN, GpioAf0);
+
+    Gpio_Init(UKEY_GPIO, UKEY_PIN, &gpioCfg);
+    Gpio_SetAfMode(UKEY_GPIO, UKEY_PIN, GpioAf0);
+
+    /* IRQ on rising edge trigger */
+    EnableNvic(UKEY_PORT_IRQ, IrqLevel3, TRUE);
+    Gpio_EnableIrq(UKEY_GPIO, UKEY_PIN, GpioIrqRising);
+    DevUpdateAT();
+
+    /* unused GPIO diabled */
+    Gpio_Init(GpioPortA, GpioPin11, &gpioCfg);
+
+    gpioCfg.enDir = GpioDirIn;
+    gpioCfg.enPuPd = GpioPu;
+    Gpio_Init(GpioPortB, GpioPin3, &gpioCfg);
+    Gpio_Init(GpioPortB, GpioPin4, &gpioCfg);
+    Gpio_Init(GpioPortB, GpioPin6, &gpioCfg);
 }
 
 /****
@@ -86,39 +140,13 @@ void RadioAntLowPower(uint8_t spiIdx, uint8_t status){ }
 void RadioAntSwitch(uint8_t spiIdx, uint8_t rxTx) { }
 
 /**
- * @brief user project special implemetation
+ * @brief user project special implementation
  * function declarations refer platform common definitions
  */
 void UserExternalGPIO(bool enable)
 {
-    stc_gpio_config_t gpioCfg;
-    DDL_ZERO_STRUCT(gpioCfg);
-
-    gpioCfg.enDir = GpioDirIn;
-    gpioCfg.enPuPd = GpioPd;
-    gpioCfg.enOD = GpioOdDisable;
     if(enable) {
-        Sysctrl_SetPeripheralGate(SysctrlPeripheralGpio, TRUE);
-        Gpio_Init(AT_GPIO, AT_PIN, &gpioCfg);
-        Gpio_SetAfMode(AT_GPIO, AT_PIN,  GpioAf0);
-        Gpio_Init(UKEY_GPIO, UKEY_PIN, &gpioCfg);
-        Gpio_SetAfMode(UKEY_GPIO, UKEY_PIN,  GpioAf0);
-
-        /* IRQ on rising edge trigger */
-        EnableNvic(UKEY_PORT_IRQ, IrqLevel3, TRUE);
-        Gpio_EnableIrq(UKEY_GPIO, UKEY_PIN, GpioIrqRising);
         DevUpdateAT();
-
-        /* unused GPIO diabled */
-        Gpio_Init(GpioPortA, GpioPin11, &gpioCfg);
-        Gpio_SetAfMode(GpioPortA, GpioPin11,  GpioAf0);
-
-        Gpio_Init(GpioPortB, GpioPin3, &gpioCfg);
-        Gpio_Init(GpioPortB, GpioPin4, &gpioCfg);
-        Gpio_Init(GpioPortB, GpioPin6, &gpioCfg);
-        Gpio_SetAfMode(GpioPortB, GpioPin3,  GpioAf0);
-        Gpio_SetAfMode(GpioPortB, GpioPin4,  GpioAf0);
-        Gpio_SetAfMode(GpioPortB, GpioPin6,  GpioAf0);
     } else {
         /** @todo: */
     }
@@ -158,6 +186,19 @@ bool UserDebugInit(bool reinit, uint32_t baudrateType, uint8_t pariType)
     BSP_DbgInit(uart.idx, UserDebugWrite);
 
     return success;
+}
+
+void UserDebugDeInit(void)
+{
+    BSP_UART_TypeDef uart = {
+        .idx = DBG_UART_IDX
+    };
+
+    BSP_UartDeInit(&uart);
+
+    BSP_DbgDeinit();
+
+    return;
 }
 
 void UserDebugWrite(const uint8_t *data, uint32_t len)
@@ -210,11 +251,13 @@ void DevCfg_Display(uint8_t uartIdx)
 {
     rps_t rps = gDevFlash.config.rps;
     uint32_t freq  = gDevFlash.config.txfreq;
-    int8_t txpow = gDevFlash.config.txpow;
     char* bwstr = NULL;
-    char* ldrstr = NULL;
-    char* parstr = NULL;
+    uint8_t ldrtx = 0;
+    uint8_t ldrrx = 0;
+    int8_t txpow = gDevFlash.config.txpow;
     bool notAes = binIsTag(0x00, gDevFlash.config.appKey, 16);
+    ldrtx = (gDevFlash.config.rps.lowRate >> 2)&0x03;
+    ldrrx = gDevFlash.config.rps.lowRate&0x03;
 
     switch(rps.bw){
     case RF_BANDWIDTH_7D8:
@@ -252,35 +295,8 @@ void DevCfg_Display(uint8_t uartIdx)
         break;
     }
 
-    switch(gDevFlash.config.rps.lowRate){
-    case LOWRATE_OP_AUTO:
-        ldrstr ="AUTO";
-        break;
-    case LOWRATE_OP_ON:
-        ldrstr ="ON";
-        break;
-    case LOWRATE_OP_OFF:
-        ldrstr ="OFF";
-        break;
-    default:
-        ldrstr ="UNKNOWN";
-        break;
-    }
-
-    switch(gDevFlash.config.prop.pari){
-    case UART_PARI_EVEN:
-        parstr = "Even";
-        break;
-    case UART_PARI_ODD:
-        parstr = "Odd";
-        break;
-    default:
-        parstr = "None";
-        break;
-    }
-
     /* Use RFO, limit power +14dBm */
-    if(gDevFlash.config.dtype & DTYPE_BITS_RFO){
+    if((gDevFlash.config.dtype >> TYPE_BITS_RFO) & 0x01){
         if(txpow > 14){
             txpow = 14;
         }
@@ -289,101 +305,86 @@ void DevCfg_Display(uint8_t uartIdx)
             txpow = 2;
         }
     }
+
     osSaveCritical();
     osEnterCritical();
+
     printk("NET:\t%s\r\nTFREQ:\t%0.1fMHz\r\nRFREQ:\t%0.1fMHz\r\n",
            gDevFlash.config.prop.netmode ? "Node to Gateway":"Node to Node",
            (float)(freq/1e6),(float)(gDevFlash.config.rxfreq/1e6));
-    printk("POW:\t%udBm\r\nBW:\t%s\r\n"
-           "TSF:\t%u\r\nRSF:\t%u\r\nCR:\t4/%u\r\nMODE:\t%s\r\nSYNC:\t0x%X\r\n",
+
+    printk("POW:\t%ddBm\r\nBW:\t%s\r\n"
+           "TSF:\t%u\r\nRSF:\t%u\r\nCR:\t4/%u\r\nMODE:\t%s\r\nSYNC:\t0x%X\r\n"
+           "PREM:\t%u,%u\r\nFIX:\t%u,%u\r\nCRC:\t%s\r\nTIQ:\t%s\r\nRIQ:\t%s\r\n",
            txpow,bwstr,
            gDevFlash.config.txsf,gDevFlash.config.rxsf,rps.cr + 4,
            gDevFlash.config.rps.modem?"LORA":"FSK",
-           gDevFlash.config.syncword);
-    printk("PREM:\t%u,%u\r\nFIX:\t%u,%u\r\nCRC:\t%s\r\nTIQ:\t%s\r\nRIQ:\t%s\r\n",
+           gDevFlash.config.syncword,
            gDevFlash.config.tprem,gDevFlash.config.rprem,
            gDevFlash.config.tfix,gDevFlash.config.rfix,
            rps.crc?"ON":"OFF",
            gDevFlash.config.rps.tiq?"ON":"OFF",
            gDevFlash.config.rps.riq?"ON":"OFF");
+
     printk("SEQ:\t%s\r\nIP:\t%s\r\nAES:\t%s\r\nACK:\t%s\r\n"
-           "LDR:\t%s\r\nPAR:\t%s\r\n"
-           "LCP:\t%u\r\nLFT:\t%u\r\nFNB:\t0x%02X\r\nTYPE:\t0x%02X\r\n",
+           "LDR:\t%u,%u\r\nLCP:\t%u\r\nLFT:\t%u\r\n"
+           "FNB:\t0x%02X\r\nTYPE:\t0x%02X\r\nFlash:\t%u\r\n",
            gDevFlash.config.prop.seqMode?"ON":"OFF",
            gDevFlash.config.prop.ipMode?"ON":"OFF",
            notAes?"OFF":"ON",
-           gDevFlash.config.prop.ack?"ON":"OFF",ldrstr,parstr,
+           gDevFlash.config.prop.ack?"ON":"OFF",ldrtx,ldrrx,
            gDevFlash.config.lcp, gDevFlash.config.lftime,
            gDevFlash.config.fnb,
-           gDevFlash.config.dtype);
+           gDevFlash.config.dtype,gDevFlash.config.flash_err);
 
     osExitCritical();
     return;
 }
 
-void DevCfg_UserDefault(void)
+void DevCfg_UserDefault(uint8_t opts)
 {
-    /**
-     * Indicate if or not use RFO
-     *      false(0)  Use PA BOOST
-     *      true(1)   Use RFO
-     */
-    gDevFlash.config.dtype = 0;
 }
 
 bool DevCfg_UserUpdate(uint8_t *data, uint32_t len)
 {
+    /** @todo: */
+    return true;
+}
+
+bool DevUserInit(void)
+{
     bool success = false;
 
-    if(0 != memcmp(gDevFlash.config.param, data, len)){
-        memcpy(gDevFlash.config.param, data, len);
-    }
+    /* init default parameters */
+    memset(&sADCConfig, 0, sizeof(sADCConfig));
+    gParam.dev.ver = APP_DEV_VER;
 
-    success = Flash_WriteParam(gDevFlash.values, gDevFlashSize);
+    success = UserDebugInit(false, gDevFlash.config.prop.bdrate, gDevFlash.config.prop.pari);
+
+    UserInitGPIO();
 
     return success;
 }
 
-void DevUserInit(void)
+void DevGetVol(uint32_t param1, uint16_t param2)
 {
-    BSP_RTC_TypeDef rtcCfg;
-    stc_rtc_time_t stcTime;
-
-    rtcCfg.callback = NULL;
-    rtcCfg.dateTime = NULL;
-    rtcCfg.extl = gParam.dev.extl;
-    if(gParam.rst.bits.u8Por1_5V || gParam.rst.bits.u8Por5V){
-        DDL_ZERO_STRUCT(stcTime);
-        /* Init RTC timer */
-        stcTime.u8Year = 0x19;
-        stcTime.u8Month = 0x01;
-        stcTime.u8Day = 0x01;
-        stcTime.u8Hour = 0x00;
-        stcTime.u8Minute = 0x00;
-        stcTime.u8Second = 0x01;
-        stcTime.u8DayOfWeek = Rtc_CalWeek(&stcTime.u8Day);
-        rtcCfg.dateTime = &stcTime;
-    }
-    BSP_RTC_Init(&rtcCfg);
-}
-
-void Dev_GetVol(void)
-{
-    BSP_ADC_TypeDef adcCfg;
     uint32_t adc = 0;
 
     /* Internal 2.5V voltage reference */
-    adcCfg.ref = RefVolSelInBgr2p5;
+    sADCConfig.ref = RefVolSelInBgr2p5;
 
-    BSP_ADC_Enable(&adcCfg);
-    adc = BSP_ADC_Sample(0, AdcAVccDiV3Input);
-    gParam.dev.vol = (adc*2500*3)/4096;
-
+    BSP_ADC_Enable(&sADCConfig);
+    adc = 3 * BSP_ADC_Sample(0, AdcAVccDiV3Input);
     /** example */
     /*
     adc = BSP_ADC_Sample(0, AdcExInputCH2);
     adc = (adc*2500)/4096;
     */
     BSP_ADC_Disable(NULL);
+
+    gParam.dev.vol = (adc*2500)/4096;
+    gParam.dev.level = calc_level(16, MIN_VOL_LEVEL, MAX_VOL_LEVEL, gParam.dev.vol);
+    gParam.dev.res = adc/100;
+
 }
 

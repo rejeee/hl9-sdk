@@ -21,10 +21,13 @@ void LED_Enable(bool enable)
     if(enable){
         Sysctrl_SetPeripheralGate(SysctrlPeripheralGpio, TRUE);
         gpioCfg.enDir = GpioDirOut;
-        Gpio_SetAfMode(LED_N_GPIO, LED1_PIN, GpioAf0);
+
         Gpio_Init(LED_N_GPIO, LED1_PIN, &gpioCfg);
-        Gpio_SetAfMode(LED_N_GPIO, LED2_PIN, GpioAf0);
+        Gpio_SetAfMode(LED_N_GPIO, LED1_PIN, GpioAf0);
+
         Gpio_Init(LED_N_GPIO, LED2_PIN, &gpioCfg);
+        Gpio_SetAfMode(LED_N_GPIO, LED2_PIN, GpioAf0);
+
         LED_OFF(LED_RF_TX);
         LED_OFF(LED_RF_RX);
     } else {

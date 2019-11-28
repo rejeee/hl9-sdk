@@ -29,6 +29,7 @@ typedef enum
     RJ_ERR_OK   = 0x00, /**< OK */
     RJ_ERR_OS,          /**< create OS object fail */
     RJ_ERR_FLASH,       /**< flash init fail */
+    RJ_ERR_PARAM,       /**< flash parameters init fail */
     RJ_ERR_LPW,         /**< LPower and timer init fail */
     RJ_ERR_CHK,         /**< HL9 sign check fail */
 } RJ_STATUS;
@@ -38,9 +39,12 @@ typedef enum
  * @brief device parameter
  */
 typedef struct  {
-    uint32_t vol;       /**> device voltage ADC */
-    uint32_t exth : 1;  /**> whether to use external high frequency OSC */
-    uint32_t extl : 1;  /**> whether to use external low frequency OSC */
+    uint32_t vol;           /**> device voltage ADC */
+    uint32_t ver    : 3;    /**> version */
+    uint32_t level  : 5;    /**> voltage level */
+    uint32_t res    : 8;    /**> reserve byte */
+    uint32_t exth   : 1;    /**> whether to use external high frequency OSC */
+    uint32_t extl   : 1;    /**> whether to use external low frequency OSC */
 } dev_param_t;
 
 /****

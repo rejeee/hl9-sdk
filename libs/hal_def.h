@@ -113,13 +113,14 @@ struct mac_lorawan_t {
     RadioQoS_t      qos;
     uint32_t        freq;
     uint32_t        addr;
-    uint16_t        seqnoUp;
-    uint16_t        seqnoDn;
+    uint32_t        sf      : 4;
+    uint32_t        fwd     : 1;        /**> forward directly */
+    uint32_t        ack     : 1;
+    uint32_t        seqnoUp :16;
     uint8_t         payload[255];   /**<  to be write or read from radio FIFO */
     uint8_t         size;           /**<  total size to be write or read */
     uint8_t         rxLen;          /**<  valid Rx data length */
     uint8_t         rxIdx;          /**<  valid Rx data index */
-    bool            ack;
 };
 
 #if defined(__cplusplus)

@@ -21,6 +21,8 @@ extern "C" {
 
 #define IS_DIGIT(x)   ((0x2F < (x)) && ((x) < 0x3A))
 
+extern const uint8_t kByte2hex[0x10];
+
 /**
  * @brief Set the random seed
  *

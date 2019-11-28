@@ -27,8 +27,9 @@ typedef union {
 struct global_param_t {
     dev_param_t     dev;
     BSP_OS_THREAD   mainid;
-    BSP_OS_THREAD   macid;
+    BSP_OS_THREAD   appid;
     BSP_OS_MUTEX    mutex;
+    uint32_t        dtime;
     union_cause_t   rst;
     uint8_t         mode;        /* AT command or transparent */
     uint8_t         aswitch;     /* AT switch */

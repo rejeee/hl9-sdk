@@ -371,7 +371,7 @@
             <ScatterFile>.\Objects\MHL9.sct</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
-            <Misc>..\..\..\libs\rjhl9.lib</Misc>
+            <Misc>..\..\..\libs\hl9.lib</Misc>
             <LinkerInputFile></LinkerInputFile>
             <DisabledWarnings></DisabledWarnings>
           </LDads>

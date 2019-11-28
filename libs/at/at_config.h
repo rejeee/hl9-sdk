@@ -20,15 +20,17 @@ Definitions
 ****/
 
 /**
- *                     scan  RFO  customized
- *   |   7 ~ 6(RFU)  |  5  |  4  |   3~0    |
+ *                show   scan  RFO  customized
+ *   |   7 (RFU)|  6  |  5  |  4  |   3~0    |
  *
  * Note:
  *   4 bit:  0 PA Boost, 1 RFO
  *   5 bit:  0 scan by level , 1 scan by cad
+ *   6 bit:  0 default , 1 show raw data
  */
-#define DTYPE_BITS_RFO          0x10
-#define DTYPE_BITS_SCAN         0x20
+#define TYPE_BITS_RFO            4
+#define TYPE_BITS_SCAN           5
+#define TYPE_BITS_RAW            6
 
 /** @name radio defines */
 /*@{*/
@@ -84,7 +86,7 @@ typedef struct
     uint32_t    modem   : 1;  /**> [0 FSK, 1 LORA ]                     */
     uint32_t    tiq     : 1;  /**> [0 OFF, 1 ON]                        */
     uint32_t    riq     : 1;  /**> [0 OFF, 1 ON]                        */
-    uint32_t    lowRate : 2;  /**> 0 AUTO, 1 ON, 2 OFF */
+    uint32_t    lowRate : 4;  /**> TLDR 2 | RLDR 2, 0 AUTO, 1 ON, 2 OFF */
 } rps_t;
 
 /**
@@ -135,6 +137,7 @@ struct device_flash_t {
     uint8_t     fnb;
     uint8_t     param[CFG_16BYTE_LEN];    /**> user parameters */
 
+    uint8_t     flash_err;                /**> flash error count */
     uint8_t     flash_ver;                /**> flash structure version */
 };
 

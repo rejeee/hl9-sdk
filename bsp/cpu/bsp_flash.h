@@ -32,11 +32,6 @@ bool BSP_FlashInit(void);
 bool BSP_CheckFlag(void);
 
 /**
- * @brief Get Flash sector size, unit byte.
- */
-uint32_t BSP_FlashSectorSize(void);
-
-/**
  * @brief Read length data from addr
  *
  * @param addr      The start address of the desired flash memory to be read.

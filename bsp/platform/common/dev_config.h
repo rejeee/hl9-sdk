@@ -30,12 +30,15 @@ Definitions
 /****
 Global Functions
 ****/
-void DevCfg_InitParam(void);
-void DevCfg_Recovery(void);
+bool DevCfg_InitParam(void);
+bool DevCfg_Recovery(uint8_t opts);
 void DevCfg_Display(uint8_t uartIdx);
 
 /* User special parameters using param fields in @struct device_flash_t */
-void DevCfg_UserDefault(void);
+
+/* 0: Update Tag */
+/* 1: User  ATZ */
+void DevCfg_UserDefault(uint8_t opts);
 bool DevCfg_UserUpdate(uint8_t *data, uint32_t len);
 
 

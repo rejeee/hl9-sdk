@@ -7,11 +7,12 @@
 extern "C" {
 #endif
 
+#define MIN_VOL_LEVEL   3000
+#define MAX_VOL_LEVEL   3600
+
 /**
  *  Debug Port Settings
  */
-
-/* The min timeslice of between two frames */
 #define DBG_UART_TIMEOUT        5U
 #define DBG_UART_SIZE           255
 #define DBG_UART_IDX            BSP_LPUART0
@@ -20,7 +21,6 @@ extern "C" {
 #define DBG_RX_PIN              GpioPin11   /* RX: PB11 */
 #define DBG_AF                  GpioAf3
 
-/* AT mode select, PB07 */
 #define AT_GPIO                 GpioPortB
 #define AT_PIN                  GpioPin7
 #define AT_HIGH()               Gpio_SetIO(AT_GPIO, AT_PIN)
@@ -38,11 +38,11 @@ extern BSP_OS_MQ        gUartQ;
 extern BSP_OS_MPOOL     gMemPool;
 
 /****
-Global Function
+Global Functions
 ****/
-void DevUserInit(void);
+bool DevUserInit(void);
 
-void Dev_GetVol(void);
+void DevGetVol(uint32_t param1, uint16_t param2);
 
 void AppMacQueryCSQ(int16_t *rssi, int8_t *snr);
 bool AppMacUpdateRx(bool update);

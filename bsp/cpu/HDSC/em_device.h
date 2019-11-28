@@ -17,6 +17,7 @@
 #include "reset.h"
 #include "adc.h"
 #include "rtc.h"
+#include "pca.h"
 
 typedef volatile uint32_t vu32;
 typedef volatile uint16_t vu16;
@@ -142,9 +143,15 @@ typedef struct
 
 typedef struct
 {
-    func_ptr_t      callback;
-    stc_rtc_time_t  *dateTime;
-    uint8_t         extl;
+    func_ptr_t          callback;
+    stc_rtc_time_t      *dateTime;
+    stc_rtc_cyc_sel_t   *cycsel;
+    uint8_t             extl;
 } BSP_RTC_TypeDef;
+
+typedef struct
+{
+    en_pca_clksel_t div;
+} BSP_PCA_TypeDef;
 
 #endif

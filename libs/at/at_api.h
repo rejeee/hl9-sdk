@@ -20,7 +20,7 @@ Include Files
 /** @name AT command version */
 /*@{*/
 /** @brief AT command version */
-#define AT_VER                          6
+#define AT_VER                          8
 /*@}*/
 
 /** @brief AT OK response */
@@ -38,7 +38,7 @@ Include Files
 /** @brief AT command max parameter length, example AT+AK= XXXX */
 #define AT_CMD_PARAM_LEN                32U
 
-/*! @brief the byte length of AT parameter. */
+/** @brief the byte length of AT parameter. */
 enum {
     CFG_1BYTE_LEN  = 1U,    /**< 1 Byte  */
     CFG_2BYTE_LEN  = 2U,    /**< 2 Byte  */
@@ -47,7 +47,7 @@ enum {
     CFG_16BYTE_LEN = 16U    /**< 16 Byte */
 };
 
-/*! @brief the AT enable type for diffrence device. */
+/** @brief the AT enable type for diffrence device. */
 typedef enum
 {
     AT_EN_ALL       = 0xFF,
@@ -148,9 +148,9 @@ void AT_Printf(const char *str);
 /**
  * @brief  the AT+TX command callback
  *
- * @param   opts        0    AT+TX,
- *                      1   AT+CMD,
- *                      2   AT+PARAM
+ * @param   opts        0   AT+TX
+ *                      1   AT+PARAM
+ *                      2   AT+CMD
  *
  * @param   buf        the pointer of AT command string
  * @param   len        the length of AT command string
@@ -175,12 +175,9 @@ uint32_t AT_TxFreq(uint32_t freq, uint8_t *buf, uint32_t len);
 /**
  * @brief  save customer configuration
  *
- * @param   data       the pointer of data buffer to to saved
- * @param   len        the length of data buffer to to saved
- *
  * return true if save successful else false.
  */
-bool Flash_WriteParam(uint32_t *data, uint32_t len);
+bool Flash_WriteParam(void);
 
 /*@}*/
 

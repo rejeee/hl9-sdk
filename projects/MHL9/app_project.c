@@ -15,12 +15,12 @@
 
 #define TASK_PERIOD_MS      100U    /* unit ms */
 
+/* Code Version */
+char *gCodeVers = "1021";
+
 /****
 Global Variables
 ****/
-
-/* Code Version */
-char *gCodeVers = "1020";
 volatile bool   gEnableRadioRx  = true;
 
 /****
@@ -75,16 +75,35 @@ static void AppTaskManager(void)
 /****
 Global Functions
 ****/
-
-/**
- * @brief  Create the App task
- */
 bool AppTaskCreate(void)
 {
+    uint8_t result = RJ_ERR_OK;
+
     bool success = false;
 
     /* watchdog timeout 6s refer MCU datasheet */
-    if(RJ_ERR_OK != PlatformInit(6)){
+    result = PlatformInit(6);
+    if(RJ_ERR_OK != result){
+        char *errstr = "MCU";
+        UserDebugInit(false, UART_BRATE_9600, UART_PARI_NONE);
+
+        switch(result){
+        case RJ_ERR_OS:
+            errstr ="OS";
+            break;
+        case RJ_ERR_FLASH:
+            errstr ="flash";
+            break;
+        case RJ_ERR_PARAM:
+            errstr ="config";
+            break;
+        case RJ_ERR_CHK:
+            errstr ="sign";
+            break;
+        }
+        printk("LoRa %s Firmware V%s %s error, please recovery\r\n", MODULE_NAME,
+               gCodeVers, errstr);
+        osDelayMs(1000);
         return false;
     }
 
@@ -93,9 +112,11 @@ bool AppTaskCreate(void)
         return false;
     }
 
-    DevUserInit();
+    success = DevUserInit();
 
-    success = UserDebugInit(false, gDevFlash.config.prop.bdrate, gDevFlash.config.prop.pari);
+    if(false == success){
+        return false;
+    }
 
     printk("LoRa %s SDK, HAL V%u:%u, XTL:%d, Firmware V%s\r\n", MODULE_NAME,
            RADIO_HAL_VERSION, AT_VER, gParam.dev.extl, gCodeVers);
@@ -109,7 +130,7 @@ bool AppTaskCreate(void)
 
 void AppTaskExtends(void)
 {
-    Dev_GetVol();
+    DevGetVol(0,0);
 
     while (1) {
         APP_FeedDog();

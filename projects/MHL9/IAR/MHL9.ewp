@@ -786,7 +786,7 @@
         </option>
         <option>
           <name>IlinkAdditionalLibs</name>
-          <state>$PROJ_DIR$\..\..\..\libs\rjhl9.a</state>
+          <state>$PROJ_DIR$\..\..\..\libs\hl9.a</state>
         </option>
         <option>
           <name>IlinkOverrideProgramEntryLabel</name>
