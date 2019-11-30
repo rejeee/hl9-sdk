@@ -127,7 +127,7 @@ struct device_flash_t {
     uint16_t    lcp;                      /**> unit second */
     uint16_t    lftime;                   /**> unit second */
     int8_t      txpow;
-    int8_t      txChan;                   /**> TX channel number */
+    uint8_t     repeat;                   /**> TX repeat times */
     uint8_t     txsf;
     uint8_t     rxsf;
     uint8_t     dtype;                    /**> data output format type */

@@ -35,6 +35,9 @@ static void RadioPrintRecv(bool format)
 {
     uint8_t i = 0;
 
+    osSaveCritical();
+    osEnterCritical();
+
     if(sMacParam.ack){
         sMacParam.ack = false;
         printk("\r\nOK\r\n");
@@ -49,9 +52,14 @@ static void RadioPrintRecv(bool format)
             }
             printk("\r\n");
         } else {
-            UserDebugWrite(sMacParam.payload + sMacParam.rxIdx, sMacParam.rxLen);
+            if((gDevFlash.config.dtype >> TYPE_BITS_RAW)&0x01){
+                UserDebugWrite(sMacParam.payload, sMacParam.size);
+            } else {
+                UserDebugWrite(sMacParam.payload + sMacParam.rxIdx, sMacParam.rxLen);
+            }
         }
     }
+    osExitCritical();
 }
 
 /**

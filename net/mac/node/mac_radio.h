@@ -50,4 +50,6 @@ RadioIrqType_t RadioDecode(uint8_t spiIdx, struct sx127x_rx_t *rxObj, struct mac
 
 bool RadioSemClear(uint8_t spiIdx, uint8_t semIdx);
 
+void RadioCustomization(bool rx, RadioSettings_t *ptr);
+
 #endif

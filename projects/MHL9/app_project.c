@@ -40,14 +40,9 @@ static bool AppTaskInit(void)
 {
     bool result = true;
 
-    /* start MAC task */
     APP_FeedDog();
     result = AppMacTask();
 
-    /**
-     * we should opearte AT command when other task is OK,
-     * so we start AT command task at the end.
-     */
     if(result){
         APP_FeedDog();
         result = AppATTask();

@@ -23,8 +23,8 @@ typedef volatile uint32_t vu32;
 typedef volatile uint16_t vu16;
 typedef volatile uint8_t vu8;
 
-/** @brief UART transfer callback function. */
-typedef void (*uart_callback_t)(uint32_t userData);
+/** @brief User callback function. */
+typedef void        (*user_callback_t)(uint32_t userData);
 
 /**
  * @brief UART NO.
@@ -46,7 +46,7 @@ typedef enum {
  */
 typedef struct
 {
-    uart_callback_t     cb;
+    user_callback_t     cb;
     en_gpio_port_t  	gpio;
     en_gpio_pin_t   	tx_pin;
     en_gpio_pin_t   	rx_pin;

@@ -19,17 +19,17 @@ Include Files
 Global Functions
 ****/
 
-/*!
+/**
  * @brief the application initialize
  */
 void AppInit(void);
 
-/*!
+/**
  * @brief  Create the application task
  */
 bool AppTaskCreate(void);
 
-/*!
+/**
  * @brief  AppTask extends operation use MAIN task
  */
 void AppTaskExtends(void);

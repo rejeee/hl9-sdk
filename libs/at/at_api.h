@@ -20,7 +20,7 @@ Include Files
 /** @name AT command version */
 /*@{*/
 /** @brief AT command version */
-#define AT_VER                          8
+#define AT_VER                          9
 /*@}*/
 
 /** @brief AT OK response */
@@ -30,7 +30,7 @@ Include Files
 #define AT_CMD_MIN_LEN                  4U
 
 /** @brief AT command maximal length */
-#define AT_CMD_MAX_LEN                  255U
+#define AT_CMD_MAX_LEN                  512U
 
 /** @brief AT command max prefix length, example AT+XXXX= */
 #define AT_CMD_PREFIX_LEN               10U
