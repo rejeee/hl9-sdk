@@ -27,7 +27,10 @@ Local Functions
 ****/
 static void AppAtResp(const char *str)
 {
+    osSaveCritical();
+    osEnterCritical();
     UserDebugWrite((uint8_t *)str, strlen(str));
+    osExitCritical();
 }
 
 static void App_Help(void)
@@ -40,7 +43,10 @@ static void App_Help(void)
 
 static void App_Information(void)
 {
+    osSaveCritical();
+    osEnterCritical();
     printk("\r\n+ATI:%s,%s\r\n", HAL_VER, gCodeVers);
+    osExitCritical();
 }
 
 static void App_Recovery(void)

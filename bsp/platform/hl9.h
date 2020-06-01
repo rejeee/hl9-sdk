@@ -31,8 +31,8 @@ struct global_param_t {
     BSP_OS_MUTEX    mutex;
     uint32_t        dtime;
     union_cause_t   rst;
-    uint8_t         mode;        /* AT command or transparent */
-    uint8_t         aswitch;     /* AT switch */
+    uint8_t         mode;
+    uint8_t         aswitch;
 };
 
 /****

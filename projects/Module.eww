@@ -2,7 +2,7 @@
 
 <workspace>
   <project>
-    <path>$WS_DIR$\MHL9\IAR\MHL9.ewp</path>
+    <path>$WS_DIR$\HL9\IAR\HL9.ewp</path>
   </project>
   <batchBuild/>
 </workspace>

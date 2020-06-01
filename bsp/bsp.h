@@ -30,6 +30,15 @@ extern "C" {
 typedef void (*iap_func)(void);
 
 /**
+ * Radio SEM IDX
+ */
+typedef enum
+{
+    SEM_IDX_NORMAL = 0,
+    SEM_IDX_SCAN
+} SemIndex_t;
+
+/**
  * @brief the pointer of uart rx operation
  */
 struct sp_uart_t
@@ -53,6 +62,9 @@ Global Functions
 ****/
 bool BSP_OS_Init(bool exth, bool extl);
 
+/**
+ * @brief Feed dog when dly_ms more than 1000ms only
+ */
 void BSP_DelayMsWithDog(uint32_t dly_ms);
 
 void BSP_OS_RandSeed(uint32_t seed);

@@ -1,14 +1,14 @@
 /*******************************************************************************
- * @file    sx127x_define.h
- * @brief   The definitions of SX127x radio module
+ * @file    sx12xx_define.h
+ * @brief   The definitions of SX12xx radio module
  *
  * @version 1.0.0
  *******************************************************************************
  * @license Refer License or other description Docs
  * @author  Felix
  ******************************************************************************/
-#ifndef SX127X_DEFINE_H
-#define SX127X_DEFINE_H
+#ifndef SX12XX_DEFINE_H
+#define SX12XX_DEFINE_H
 
 /****
 Include Files
@@ -26,6 +26,8 @@ Macro definiens
 /** @name SF defines */
 /*@{*/
 
+/** @brief SF5: 32  */
+#define RF_SF_5                  5U
 /** @brief SF6: 64  */
 #define RF_SF_6                  6U
 /** @brief SF7: 128, default  */

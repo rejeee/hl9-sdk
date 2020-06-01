@@ -20,7 +20,7 @@ Include Files
 /** @name AT command version */
 /*@{*/
 /** @brief AT command version */
-#define AT_VER                          9
+#define AT_VER                          11
 /*@}*/
 
 /** @brief AT OK response */

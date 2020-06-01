@@ -27,6 +27,9 @@ Definitions
 #define DEFAULT_FREQ_UPLINK     475500000U
 #define DEFAULT_FREQ_DWLINK     506500000U
 
+#define FLASH_CHK_CNT           (3u)
+#define FLASH_ERR_CNT           (5u)
+
 /****
 Global Functions
 ****/

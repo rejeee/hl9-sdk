@@ -95,6 +95,7 @@ void UserExternalGPIO(bool enable);
 /**
  * @FIXME:The following code should be customized by the user
  */
+void UserGpioUnused(void);
 
 /**
  * @brief Enable or disable external GPIO for user

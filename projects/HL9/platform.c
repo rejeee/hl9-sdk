@@ -1,6 +1,6 @@
 /*******************************************************************************
- * @file    platform_mhl9.c
- * @brief   The HL9 platform interface implementation
+ * @file    platform.c
+ * @brief   The platform interface implementation
  *
  * @version 1.0.0
  *******************************************************************************
@@ -9,7 +9,7 @@
  ******************************************************************************/
 #include "platform/platform.h"
 #include "at/at_config.h"
-#include "radio/sx127x/sx127x_common.h"
+#include "radio/sx12xx_common.h"
 #include "mac/node/mac_radio.h"
 
 #define APP_DEV_VER        1
@@ -51,6 +51,12 @@ struct sp_uart_t gDebugUart = {
 
 static BSP_ADC_TypeDef sADCConfig;
 
+static void UserRtcCallback(void)
+{
+    /* @todo */
+    /* user code */
+}
+
 static void DevUpdateAT(void)
 {
     if(gParam.aswitch){
@@ -83,10 +89,7 @@ static void UserInitGPIO(void)
     gpioCfg.enDir = GpioDirIn;
     gpioCfg.enPuPd = GpioPd;
     Gpio_Init(AT_GPIO, AT_PIN, &gpioCfg);
-    Gpio_SetAfMode(AT_GPIO, AT_PIN, GpioAf0);
-
     Gpio_Init(UKEY_GPIO, UKEY_PIN, &gpioCfg);
-    Gpio_SetAfMode(UKEY_GPIO, UKEY_PIN, GpioAf0);
 
     /* IRQ on rising edge trigger */
     EnableNvic(UKEY_PORT_IRQ, IrqLevel3, TRUE);
@@ -95,12 +98,20 @@ static void UserInitGPIO(void)
 
     /* unused GPIO diabled */
     Gpio_Init(GpioPortA, GpioPin11, &gpioCfg);
-
-    gpioCfg.enDir = GpioDirIn;
-    gpioCfg.enPuPd = GpioPu;
-    Gpio_Init(GpioPortB, GpioPin3, &gpioCfg);
     Gpio_Init(GpioPortB, GpioPin4, &gpioCfg);
-    Gpio_Init(GpioPortB, GpioPin6, &gpioCfg);
+    Gpio_Init(UNUSED_GPIO, UNUSED_PIN, &gpioCfg);
+
+    /* PA GPIO */
+    gpioCfg.enPuPd = GpioPu;
+    Gpio_Init(UPA_GPIO, UPA_PIN, &gpioCfg);
+    osDelayMs(1);
+    if(0 == GPIO_READ(UPA_GPIO,UPA_PIN)){
+        gPaEnable = true;
+        gDevFlash.config.txpow = 0;
+        gDevFlash.config.dtype = (0x01 << TYPE_BITS_RFO);
+    }
+    gpioCfg.enPuPd = GpioPd;
+    Gpio_Init(UPA_GPIO, UPA_PIN, &gpioCfg);
 }
 
 /****
@@ -137,7 +148,7 @@ void RadioDelay(uint32_t ms)
 
 /* Ant control is empty implemetation to be compatible different designs */
 void RadioAntLowPower(uint8_t spiIdx, uint8_t status){ }
-void RadioAntSwitch(uint8_t spiIdx, uint8_t rxTx) { }
+void RadioAntSwitch(uint8_t spiIdx, bool rx) { }
 
 /**
  * @brief user project special implementation
@@ -306,12 +317,16 @@ void DevCfg_Display(uint8_t uartIdx)
         }
     }
 
+    if(gPaEnable){
+        txpow = 30;
+    }
+
     osSaveCritical();
     osEnterCritical();
 
-    printk("NET:\t%s\r\nTFREQ:\t%0.1fMHz\r\nRFREQ:\t%0.1fMHz\r\n",
+    printk("NET:\t%s\r\nTFREQ:\t%ukHz\r\nRFREQ:\t%ukHz\r\n",
            gDevFlash.config.prop.netmode ? "Node to Gateway":"Node to Node",
-           (float)(freq/1e6),(float)(gDevFlash.config.rxfreq/1e6));
+           freq/1000,gDevFlash.config.rxfreq/1000);
 
     printk("POW:\t%ddBm\r\nBW:\t%s\r\n"
            "TSF:\t%u\r\nRSF:\t%u\r\nCR:\t4/%u\r\nMODE:\t%s\r\nSYNC:\t0x%X\r\n"
@@ -328,21 +343,26 @@ void DevCfg_Display(uint8_t uartIdx)
 
     printk("SEQ:\t%s\r\nIP:\t%s\r\nAES:\t%s\r\nACK:\t%s\r\n"
            "LDR:\t%u,%u\r\nLCP:\t%u\r\nLFT:\t%u\r\n"
-           "FNB:\t0x%02X\r\nTYPE:\t0x%02X\r\nFlash:\t%u\r\n",
+           "FNB:\t0x%02X\r\nTYPE:\t0x%02X\r\n",
            gDevFlash.config.prop.seqMode?"ON":"OFF",
            gDevFlash.config.prop.ipMode?"ON":"OFF",
            notAes?"OFF":"ON",
            gDevFlash.config.prop.ack?"ON":"OFF",ldrtx,ldrrx,
            gDevFlash.config.lcp, gDevFlash.config.lftime,
            gDevFlash.config.fnb,
-           gDevFlash.config.dtype,gDevFlash.config.flash_err);
+           gDevFlash.config.dtype);
 
     osExitCritical();
+
     return;
 }
 
 void DevCfg_UserDefault(uint8_t opts)
 {
+    if(gPaEnable){
+        gDevFlash.config.txpow = 0;
+        gDevFlash.config.dtype = (0x01 << TYPE_BITS_RFO);
+    }
 }
 
 bool DevCfg_UserUpdate(uint8_t *data, uint32_t len)
@@ -353,7 +373,25 @@ bool DevCfg_UserUpdate(uint8_t *data, uint32_t len)
 
 bool DevUserInit(void)
 {
+    BSP_RTC_TypeDef rtcCfg;
+    stc_rtc_time_t stcTime;
     bool success = false;
+
+#if USE_RTC_TIMER
+    stc_rtc_cyc_sel_t cycsel;
+    cycsel.enCyc_sel = RtcPrads;
+    cycsel.enPrds_sel = Rtc_1Day;
+    cycsel.u8Prdx = 0xFF;
+
+    rtcCfg.cycsel= &cycsel;
+    rtcCfg.callback = UserRtcCallback;
+#else
+    rtcCfg.cycsel = NULL;
+    rtcCfg.callback = NULL;
+#endif
+
+    rtcCfg.dateTime = NULL;
+    rtcCfg.extl = gParam.dev.extl;
 
     /* init default parameters */
     memset(&sADCConfig, 0, sizeof(sADCConfig));
@@ -361,7 +399,22 @@ bool DevUserInit(void)
 
     success = UserDebugInit(false, gDevFlash.config.prop.bdrate, gDevFlash.config.prop.pari);
 
+    if(gParam.rst.bits.u8Por1_5V || gParam.rst.bits.u8Por5V){
+        DDL_ZERO_STRUCT(stcTime);
+        /* Init RTC timer */
+        stcTime.u8Year = 0x00;
+        stcTime.u8Month = 0x01;
+        stcTime.u8Day = 0x01;
+        stcTime.u8Hour = 0x00;
+        stcTime.u8Minute = 0x00;
+        stcTime.u8Second = 0x01;
+        stcTime.u8DayOfWeek = Rtc_CalWeek(&stcTime.u8Day);
+        rtcCfg.dateTime = &stcTime;
+    }
+    BSP_RTC_Init(&rtcCfg);
     UserInitGPIO();
+
+    gParam.dtime = BSP_RTC_GetSecs();
 
     return success;
 }
@@ -370,21 +423,22 @@ void DevGetVol(uint32_t param1, uint16_t param2)
 {
     uint32_t adc = 0;
 
-    /* Internal 2.5V voltage reference */
-    sADCConfig.ref = RefVolSelInBgr2p5;
+    sADCConfig.ref = RefVolSelInBgr1p5;
 
     BSP_ADC_Enable(&sADCConfig);
-    adc = 3 * BSP_ADC_Sample(0, AdcAVccDiV3Input);
+    adc = BSP_ADC_Sample(0, AdcAVccDiV3Input);
+    gParam.dev.vol = (adc*1500*3)/4095;
+
     /** example */
     /*
     adc = BSP_ADC_Sample(0, AdcExInputCH2);
-    adc = (adc*2500)/4096;
+    adc = (adc*1500)/4095;
     */
     BSP_ADC_Disable(NULL);
 
-    gParam.dev.vol = (adc*2500)/4096;
-    gParam.dev.level = calc_level(16, MIN_VOL_LEVEL, MAX_VOL_LEVEL, gParam.dev.vol);
-    gParam.dev.res = adc/100;
+    gParam.dev.level = calc_level(32, MIN_VOL_LEVEL, MAX_VOL_LEVEL, gParam.dev.vol);
+    gParam.dev.res = (gParam.dev.vol+50)/100;
 
+    return;
 }
 

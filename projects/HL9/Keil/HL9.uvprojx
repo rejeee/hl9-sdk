@@ -16,7 +16,7 @@
         <TargetCommonOption>
           <Device>HC32L130F8UA</Device>
           <Vendor>HDSC</Vendor>
-          <PackID>HDSC.HC32L130.1.0.0</PackID>
+          <PackID>HDSC.HC32L130.1.0.1</PackID>
           <PackURL>https://raw.githubusercontent.com/hdscmcu/pack/master/</PackURL>
           <Cpu>IRAM(0x20000000,0x2000) IROM(0x00000000,0x10000) CPUTYPE("Cortex-M0+") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>__CORTEX_M0 __CMSIS_RTOS NDEBUG</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\kernel\CMSIS\Include;..\..\..\kernel\CMSIS\RTOS\RTX\SRC;..\..\..\kernel\CMSIS\RTOS\RTX\INC;..\..\..\bsp;..\..\..\bsp\cpu;..\..\..\bsp\cpu\HDSC;..\..\..\bsp\cpu\HDSC\HC32L13X;..\..\..\bsp\cpu\HDSC\HC32L13X\emdrv;..\..\..\bsp\cpu\HDSC\HC32L13X\driver\inc;..\..\..\bsp\platform;..\..\..\bsp\platform\common;..\..\..\libs;..\..\..\app;..\..\..\net;..\config;..\</IncludePath>
+              <IncludePath>..\..\..\kernel\CMSIS\Include;..\..\..\kernel\RTX\SRC;..\..\..\kernel\RTX\INC;..\..\..\bsp;..\..\..\bsp\cpu;..\..\..\bsp\cpu\HDSC;..\..\..\bsp\cpu\HDSC\HC32L13X;..\..\..\bsp\cpu\HDSC\HC32L13X\emdrv;..\..\..\bsp\cpu\HDSC\HC32L13X\driver\inc;..\..\..\bsp\platform;..\..\..\bsp\platform\common;..\..\..\libs;..\..\..\app;..\..\..\net;..\config;..\</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -529,72 +529,72 @@
             <File>
               <FileName>HAL_CM.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\kernel\CMSIS\RTOS\RTX\SRC\HAL_CM.c</FilePath>
+              <FilePath>..\..\..\kernel\RTX\SRC\HAL_CM.c</FilePath>
             </File>
             <File>
               <FileName>rt_CMSIS.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_CMSIS.c</FilePath>
+              <FilePath>..\..\..\kernel\RTX\SRC\rt_CMSIS.c</FilePath>
             </File>
             <File>
               <FileName>rt_Event.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_Event.c</FilePath>
+              <FilePath>..\..\..\kernel\RTX\SRC\rt_Event.c</FilePath>
             </File>
             <File>
               <FileName>rt_List.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_List.c</FilePath>
+              <FilePath>..\..\..\kernel\RTX\SRC\rt_List.c</FilePath>
             </File>
             <File>
               <FileName>rt_Mailbox.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_Mailbox.c</FilePath>
+              <FilePath>..\..\..\kernel\RTX\SRC\rt_Mailbox.c</FilePath>
             </File>
             <File>
               <FileName>rt_MemBox.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_MemBox.c</FilePath>
+              <FilePath>..\..\..\kernel\RTX\SRC\rt_MemBox.c</FilePath>
             </File>
             <File>
               <FileName>rt_Memory.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_Memory.c</FilePath>
+              <FilePath>..\..\..\kernel\RTX\SRC\rt_Memory.c</FilePath>
             </File>
             <File>
               <FileName>rt_Mutex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_Mutex.c</FilePath>
+              <FilePath>..\..\..\kernel\RTX\SRC\rt_Mutex.c</FilePath>
             </File>
             <File>
               <FileName>rt_Robin.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_Robin.c</FilePath>
+              <FilePath>..\..\..\kernel\RTX\SRC\rt_Robin.c</FilePath>
             </File>
             <File>
               <FileName>rt_Semaphore.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_Semaphore.c</FilePath>
+              <FilePath>..\..\..\kernel\RTX\SRC\rt_Semaphore.c</FilePath>
             </File>
             <File>
               <FileName>rt_System.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_System.c</FilePath>
+              <FilePath>..\..\..\kernel\RTX\SRC\rt_System.c</FilePath>
             </File>
             <File>
               <FileName>rt_Task.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_Task.c</FilePath>
+              <FilePath>..\..\..\kernel\RTX\SRC\rt_Task.c</FilePath>
             </File>
             <File>
               <FileName>rt_Time.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_Time.c</FilePath>
+              <FilePath>..\..\..\kernel\RTX\SRC\rt_Time.c</FilePath>
             </File>
             <File>
               <FileName>rt_Timer.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\kernel\CMSIS\RTOS\RTX\SRC\rt_Timer.c</FilePath>
+              <FilePath>..\..\..\kernel\RTX\SRC\rt_Timer.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -604,12 +604,12 @@
             <File>
               <FileName>HAL_CM0.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\kernel\CMSIS\RTOS\RTX\SRC\ARM\HAL_CM0.c</FilePath>
+              <FilePath>..\..\..\kernel\RTX\SRC\ARM\HAL_CM0.c</FilePath>
             </File>
             <File>
               <FileName>SVC_Table.s</FileName>
               <FileType>2</FileType>
-              <FilePath>..\..\..\kernel\CMSIS\RTOS\RTX\SRC\ARM\SVC_Table.s</FilePath>
+              <FilePath>..\..\..\kernel\RTX\SRC\ARM\SVC_Table.s</FilePath>
             </File>
           </Files>
         </Group>
@@ -652,9 +652,9 @@
               <FilePath>..\app_project.c</FilePath>
             </File>
             <File>
-              <FileName>platform_mhl9.c</FileName>
+              <FileName>platform.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\platform_mhl9.c</FilePath>
+              <FilePath>..\platform.c</FilePath>
             </File>
             <File>
               <FileName>platform_conf.h</FileName>

@@ -42,10 +42,10 @@ Definitions
 #define RF_FREQ_MAX             105e7
 
 /** @brief minimal spread spectrum  */
-#define RF_SF_MIN_6             6U
+#define RF_SF_MIN               5U
 
 /** @brief maximal spread spectrum  */
-#define RF_SF_MAX_12            12U
+#define RF_SF_MAX              12U
 
 /** @brief minimal code rate = 4/5  */
 #define RF_CR_MIN_5             1U
@@ -148,7 +148,7 @@ struct device_flash_t {
 typedef union
 {
     struct device_flash_t config;
-    uint32_t values[sizeof(struct device_flash_t)/sizeof(uint32_t) + 1];
+    uint32_t values[(sizeof(struct device_flash_t)+3)/4 + 1];
 } DeviceFlash_t;
 
 /****

@@ -18,10 +18,10 @@ extern "C" {
 
 /* LED num */
 enum {
-  LED_NORMAL = 0x00,
-  LED_RF_TX,
-  LED_RF_RX,
-  LED_ULED
+    LED_NORMAL = 0x00,
+    LED_RF_TX,
+    LED_RF_RX,
+    LED_ULED
 };
 
 void LED_Enable(bool enable);

@@ -11,17 +11,18 @@
 #include "app_at.h"
 #include "app_mac.h"
 #include "at/at_config.h"
-#include "radio/sx127x/sx127x_common.h"
+#include "radio/sx12xx_common.h"
 
 #define TASK_PERIOD_MS      100U    /* unit ms */
 
 /* Code Version */
-char *gCodeVers = "1021";
+char *gCodeVers = "1022";
 
 /****
 Global Variables
 ****/
 volatile bool   gEnableRadioRx  = true;
+bool gPaEnable = false;
 
 /****
 Local Variables
@@ -102,8 +103,14 @@ bool AppTaskCreate(void)
         return false;
     }
 
+#if BOOL_EXTL_EN
+    if(BSP_ClockCheck(500) < 500){
+        gParam.dev.extl = 1;
+    }
+#endif
+
     /* Low Energy Timer and DeepSleep init */
-    if(false == BSP_LPowerInit(false)){
+    if(false == BSP_LPowerInit(gParam.dev.extl)){
         return false;
     }
 
@@ -114,7 +121,7 @@ bool AppTaskCreate(void)
     }
 
     printk("LoRa %s SDK, HAL V%u:%u, XTL:%d, Firmware V%s\r\n", MODULE_NAME,
-           RADIO_HAL_VERSION, AT_VER, gParam.dev.extl, gCodeVers);
+           RadioHalVersion(), AT_VER, gParam.dev.extl, gCodeVers);
 
     if(success) {
         success = AppTaskInit();

@@ -17,6 +17,8 @@
 extern "C" {
 #endif
 
+void DevRadioIOInit(void);
+
 /**
  * @param   enable      true is enable , false is disable
  *

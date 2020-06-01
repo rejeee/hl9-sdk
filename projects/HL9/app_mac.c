@@ -139,6 +139,12 @@ uint32_t AT_TxFreq(uint32_t freq, uint8_t *buf, uint32_t len)
 {
     uint32_t status = 0;
 
+    if(gPaEnable){
+        if(gDevFlash.config.txpow > 0){
+            gDevFlash.config.txpow = 0;
+        }
+    }
+
     sMacParam.freq = freq;
     status = MacRadio_TxProcess(BSP_SPI0, buf, len, &sMacParam);
 
@@ -147,7 +153,7 @@ uint32_t AT_TxFreq(uint32_t freq, uint8_t *buf, uint32_t len)
 
 RadioIrqType_t RadioRxFinish(uint8_t spiIdx)
 {
-    struct sx127x_rx_t rxObj;
+    struct sx12xx_rx_t rxObj;
     RadioIrqType_t type_flag = RADIO_IRQ_UNKOWN;
     {
         rxObj.modem = gDevFlash.config.rps.modem;
@@ -166,6 +172,25 @@ RadioIrqType_t RadioRxFinish(uint8_t spiIdx)
     }
 
     return type_flag;
+}
+
+void RadioCustomization(uint8_t spiIdx, bool tx, RadioSettings_t *ptr)
+{
+    /**
+     * This is a callback function before sending or receiving.
+     *
+     * You can modify the RF parameters dynamic adjustment of transceiver.
+     *
+     */
+
+    /* @todo */
+    /*
+    if(tx){
+        ptr->freq = USER_CFG_TFREQ;
+    } else {
+        ptr->freq = USER_CFG_RFREQ;
+    }
+    */
 }
 
 bool AppMacUpdateRx(bool update)

@@ -1,6 +1,6 @@
 /*******************************************************************************
- * @file    sx127x_common.h
- * @brief   The common interface for sx127x
+ * @file    sx12xx_common.h
+ * @brief   The common interface for sx12xx
  *
  * This is a convenience header file for defining difference radio chip.
  *
@@ -9,24 +9,18 @@
  * @license Refer License or other description Docs
  * @author  Felix
  ******************************************************************************/
-#ifndef SX127X_COMMON_H
-#define SX127X_COMMON_H
+#ifndef SX12XX_COMMON_H
+#define SX12XX_COMMON_H
 
 /****
 Include Files
 ****/
 #include <stdint.h>
-#include "radio/sx127x/sx127x_define.h"
+#include "radio/sx12xx_define.h"
 
 /****
 Macro definiens
 ****/
-
-/** @name Radio HAL version */
-/*@{*/
-/** @brief Radio HAL version */
-#define RADIO_HAL_VERSION       18U
-/*@}*/
 
 /** @brief 32MHz XTAL frequency */
 #define RADIO_XOSC_FREQ         32000000U
@@ -77,6 +71,22 @@ typedef enum
   OP_MODE_CAD
 } RadioOpMode_t;
 
+typedef enum
+{
+  CHIP_1261 = 0,
+  CHIP_1262,
+  CHIP_1268
+} ChipType_t;
+
+enum
+{
+  PA_HMAX_22DB = 0,
+  PA_HMAX_20DB,
+  PA_HMAX_17DB,
+  PA_HMAX_14DB,
+  PA_HMAX_10DB
+};
+
 /**
  * Radio Settings
  */
@@ -105,7 +115,7 @@ typedef struct
  * rxmode     [false] single rx [true] continuous
  * crc        [false] off [true] on
  */
-struct sx127x_rx_t
+struct sx12xx_rx_t
 {
     uint32_t    freq;
     uint8_t     bandwidth;
@@ -113,6 +123,42 @@ struct sx127x_rx_t
     uint8_t     crc;
     uint8_t     modem;
 };
+
+/**
+ * @brief Get current HAL version
+ */
+uint32_t RadioHalVersion(void);
+
+/**
+ * @brief Radio Driver Init
+ */
+void RadioInit(uint8_t spiIdx);
+
+/**
+ * @brief a delay function for radio operatioin
+ *
+ * @note Need external implemention
+ *
+ * @param ms  values of delay
+ */
+void RadioDelay(uint32_t ms);
+void RadioDelayUs(uint32_t us);
+
+void RadioReset(uint8_t spiIdx);
+
+/**
+ * @brief ANT switch for TX and RX
+ *
+ * @param On/Off  0--TX, 1--RX
+ */
+void RadioAntSwitch(uint8_t spiIdx, bool rx);
+
+/**
+ * @brief ANT low power set
+ *
+ * @param status    0--active; 1-deactive(lowpower)
+ */
+void RadioAntLowPower(uint8_t spiIdx, uint8_t status);
 
 #ifdef __cplusplus
 }

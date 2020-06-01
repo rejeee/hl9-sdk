@@ -39,6 +39,8 @@ void srand_t(unsigned int seed);
  */
 int32_t randr(int32_t max);
 
+bool little_endian(void);
+
 /**
  * @brief Read 16-bit quantity from given pointer in little endian byte order.
  */
@@ -92,7 +94,7 @@ bool hex2bin(uint8_t *str, uint32_t len);
  * @param len   the length of this binary data
  *
  */
-void bin2invert(uint8_t *buf, uint32_t len);
+void bin2invert(uint8_t *buf, uint16_t len);
 
 /**
  * Convert a binary to hex string
