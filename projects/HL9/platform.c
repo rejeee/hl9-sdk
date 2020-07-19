@@ -10,7 +10,6 @@
 #include "platform/platform.h"
 #include "at/at_config.h"
 #include "radio/sx12xx_common.h"
-#include "mac/node/mac_radio.h"
 
 #define APP_DEV_VER        1
 
@@ -82,6 +81,8 @@ static void DebugCallback(uint32_t userData)
 static void UserInitGPIO(void)
 {
     stc_gpio_config_t gpioCfg;
+    uint8_t pin = 0;
+
     DDL_ZERO_STRUCT(gpioCfg);
 
     Sysctrl_SetPeripheralGate(SysctrlPeripheralGpio, TRUE);
@@ -112,6 +113,24 @@ static void UserInitGPIO(void)
     }
     gpioCfg.enPuPd = GpioPd;
     Gpio_Init(UPA_GPIO, UPA_PIN, &gpioCfg);
+    Gpio_Init(GpioPortD, GpioPin0, &gpioCfg);
+    Gpio_Init(GpioPortD, GpioPin1, &gpioCfg);
+
+    /* not exists GPIO diabled */
+    Gpio_Init(GpioPortA, GpioPin0, &gpioCfg);
+    Gpio_Init(GpioPortA, GpioPin1, &gpioCfg);
+
+    Gpio_Init(GpioPortB, GpioPin2, &gpioCfg);
+    Gpio_Init(GpioPortB, GpioPin8, &gpioCfg);
+    Gpio_Init(GpioPortB, GpioPin9, &gpioCfg);
+
+    for(pin = 0; pin < 14; pin++){
+        Gpio_Init(GpioPortC, pin, &gpioCfg);
+    }
+
+    for(pin = 2; pin < 8; pin++){
+        Gpio_Init(GpioPortD, pin, &gpioCfg);
+    }
 }
 
 /****

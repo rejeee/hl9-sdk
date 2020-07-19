@@ -16,7 +16,7 @@
 #define TASK_PERIOD_MS      100U    /* unit ms */
 
 /* Code Version */
-char *gCodeVers = "1022";
+char *gCodeVers = "1023";
 
 /****
 Global Variables

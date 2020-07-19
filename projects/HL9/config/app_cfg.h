@@ -38,7 +38,7 @@
  * module name
  */
 #define  HAL_VER                "3"
-#define  MODULE_NAME        "M-HL9"
+#define  MODULE_NAME            "M-HL9"
 
 /*
 ********************************************************************************
